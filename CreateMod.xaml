@@ -1,0 +1,25 @@
+﻿<Window x:Class="Concursus.CreateMod"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Concursus"
+        mc:Ignorable="d"
+        Title="Create Mod" Height="534" Width="922"
+        ResizeMode="NoResize" >
+    <StackPanel Margin="20,0,20,0" Height="620" VerticalAlignment="Top">
+        <Label Content="Mod Name:"/>
+        <TextBox x:Name="txtName" />
+        
+        <Label Content="Mod Author:"/>
+        <TextBox x:Name="txtAuthor" />
+        
+        <Label Content="Mod Version:"/>
+        <TextBox x:Name="txtVersion" />
+        
+        <Label Content="Mod Description:"/>
+        <TextBox x:Name="txtDescription" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" SpellCheck.IsEnabled="True" Height="276" />
+
+        <Button x:Name="button" Content="Create" Margin="0,20,0,0" Click="button_Click"/>
+    </StackPanel>
+</Window>

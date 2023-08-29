@@ -1,0 +1,48 @@
+﻿<Window x:Class="Concursus.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Concursus"
+        mc:Ignorable="d"
+        Title="Concursus" 
+        SizeToContent="WidthAndHeight"
+        WindowStartupLocation="CenterScreen"
+        Loaded="Naoto_Window">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10">
+            <Label x:Name="label" Content="Game:"/>
+            <ComboBox x:Name="cboGames" DisplayMemberPath="GameName" SelectionChanged="cboGames_SelectionChanged" />
+        </StackPanel>
+
+        <Button x:Name="btnOpenRssFeed" Content="Recent GB Mods" Height="30" Width="120" Click="btnOpenRssFeed_Click" Margin="10" Grid.Row="0" HorizontalAlignment="Right"/>
+
+        <DataGrid x:Name="dataMods" Grid.Row="1" AutoGenerateColumns="False" CanUserResizeRows="False" Margin="0,0,55,0" CellEditEnding="dataMods_CellEditEnding">
+            <DataGrid.Columns>
+                <DataGridCheckBoxColumn Header="" Binding="{Binding enabled}" CanUserSort="False" Width="Auto"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" CanUserSort="False" Width="*"/>
+                <DataGridTextColumn Header="Version" Binding="{Binding Version, UpdateSourceTrigger=PropertyChanged}" CanUserSort="False" Width="*"/>
+                <DataGridTextColumn Header="Author" Binding="{Binding Author, UpdateSourceTrigger=PropertyChanged}" CanUserSort="False" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,10,0">
+            <Button x:Name="btnMoveUp" Content="▲" Height="50" Width="40" Click="btnMoveUp_Click"/>
+            <Button x:Name="btnRefresh" Content="⟳" FontSize="25" Height="50" Width="40" Margin="0,10,0,0" Click="btnRefresh_Click"/>
+            <Button x:Name="btnMoveDown" Content="▼" Height="50" Width="40" Click="btnMoveDown_Click" Margin="0,10,0,0"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <Button x:Name="btnCreate" Content="Create Mod" Height="50" Width="224" Click="btnCreate_Click"/>
+            <Button x:Name="btnSave" Content="Save" Height="50" Width="248" Click="btnSave_Click" />
+            <Button x:Name="btnSaveAndPlay" Content="Save &amp; Play" Height="50" Width="248" Click="btnSaveAndPlay_Click"/>
+            <Button x:Name="btnSettings" Content="⚙️" Width="64" Click="btnSettings_Click" />
+        </StackPanel>
+    </Grid>
+</Window>

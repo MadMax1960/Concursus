@@ -1,0 +1,19 @@
+﻿<Window x:Class="Concursus.Settings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Concursus"
+        mc:Ignorable="d"
+        Title="Settings" Height="478" Width="550.5"
+        ResizeMode="NoResize">
+    <Grid>
+        <Label x:Name="lblTheme" Content="Theme:" HorizontalAlignment="Left" Margin="9,12,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="cboThemes" HorizontalAlignment="Center" Margin="0,51,0,0" VerticalAlignment="Top" Width="508.5" SelectionChanged="cboThemes_SelectionChanged"/>
+
+        <Button Content="Add Game (Automatic)" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Margin="10,10,0,0" Click="btnAddGame_Click"/>
+        <Button Content="Add Game (Manual)" HorizontalAlignment="Left" VerticalAlignment="Top" Width="150" Margin="170,10,0,0" Click="btnManualAdd_Click"/>
+
+        <Button x:Name="btnSave" Content="Save" HorizontalAlignment="Center" Margin="0,396,0,0" VerticalAlignment="Top" Width="508.5" Click="btnSave_Click"/>
+    </Grid>
+</Window>

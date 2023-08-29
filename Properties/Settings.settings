@@ -1,0 +1,30 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Concursus.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="EO1_Path" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="EO2_Path" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="EO3_Path" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="progress_close_status" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="EO1_EXE" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Etrian Odyssey.exe</Value>
+    </Setting>
+    <Setting Name="EO2_EXE" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Etrian Odyssey 2.exe</Value>
+    </Setting>
+    <Setting Name="EO3_EXE" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Etrian Odyssey 3.exe</Value>
+    </Setting>
+    <Setting Name="App_Theme" Type="System.String" Scope="User">
+      <Value Profile="(Default)">White</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
