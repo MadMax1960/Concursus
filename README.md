@@ -3,7 +3,7 @@
 
 A Unity Mod Manager focused on the merging of assets. Currently really only supports the basic modding of games, but the framework for things like GB one click downloads, encryption support, and various other things lie under the hood. Originally planned to port to avelonia for the release of P5T, it seems that will have to wait because Sega decided to make me suffer with a different game instead! 
 
-
+**NEEDS .NET 6.0**
 
 
 
