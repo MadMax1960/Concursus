@@ -1,1 +1,3 @@
+A Unity Mod Manager focused on the merging of assets. Currently really only supports the basic modding of games, but the framework for things like GB one click downloads, encryption support, and various other things lie under the hood. Originally planned to port to avelonia for the release of P5T, it seems that will have to wait because Sega decided to make me suffer with a different game instead! 
 
+To add a game simply go to "add game automatic" and browse to the games exe. Rudimentary emulation support exists but it's only meant for full game dumps atm, I have a very scuffed way to do it properly that I plan om implementing fully one day.
