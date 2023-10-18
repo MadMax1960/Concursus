@@ -46,6 +46,25 @@ namespace Concursus
     // Add more entries for other known games as needed
 };
 
+		private Dictionary<string, int> GBRSSValues = new Dictionary<string, int>
+{
+	{ "SonicSuperstars.exe", 18552 },
+	{ "SoulHackers2.exe", 17065 },
+	{ "Etrian Odyssey.exe", 18479 },
+	{ "Etrian Odyssey 2.exe", 18480 },
+	{ "Etrian Odyssey 3.exe", 18481 },
+    // Add more entries for other known games as needed
+};
+
+		private Dictionary<string, string> GBONECLICKValues = new Dictionary<string, string>
+{
+	{ "SonicSuperstars.exe", "SUPERSTARS" },
+	{ "SoulHackers2.exe", "SH2" },
+	{ "Etrian Odyssey.exe", "EOHD" },
+	{ "Etrian Odyssey 2.exe", "EO2HD" },
+	{ "Etrian Odyssey 3.exe", "EO3HD" }
+    // Add more entries for other known games as needed
+};
 
 		private void btnAddGame_Click(object sender, RoutedEventArgs e)
 		{
@@ -75,27 +94,40 @@ namespace Concursus
 				gameID = knownGameIDs[Path.GetFileName(exePath)]; // Set the GameID if it's a known game
 			}
 
+			int GBRSS = 0; // Initialize GBRSS as an int
+			string GBONECLICK = ""; // Initialize GBONECLICK as a string
+
+			if (GBRSSValues.ContainsKey(Path.GetFileName(exePath)))
+			{
+				GBRSS = GBRSSValues[Path.GetFileName(exePath)]; // Set GBRSS as an int
+			}
+
+			if (GBONECLICKValues.ContainsKey(Path.GetFileName(exePath)))
+			{
+				GBONECLICK = GBONECLICKValues[Path.GetFileName(exePath)]; // Set GBONECLICK as a string
+			}
+
 			List<Game> games = new List<Game>();
 			games.Add(new Game()
 			{
 				key = key,
 				GameName = gameName,
 				GameFolderDataName = Path.GetFileName(dataDir),
-				GamePath = Path.GetDirectoryName(exePath), // Use Path.GetDirectoryName(exePath)
+				GamePath = Path.GetDirectoryName(exePath),
 				GameExecutable = exePath,
-				GameID = gameID // Set the GameID based on knownGameIDs
+				GameID = gameID,
+				GBRSS = GBRSS, // Set GBRSS as an int
+				GBONECLICK = GBONECLICK // Set GBONECLICK as a string
 			});
 
 			string gameJson = JsonConvert.SerializeObject(games, Formatting.Indented);
 
-			// Create the GameData folder if it doesn't exist
 			string gameDataFolderPath = "GameData";
 			if (!Directory.Exists(gameDataFolderPath))
 			{
 				Directory.CreateDirectory(gameDataFolderPath);
 			}
 
-			// Save the game's data in a separate JSON file named after the key
 			string jsonFileName = Path.Combine(gameDataFolderPath, $"{key}.json");
 			File.WriteAllText(jsonFileName, gameJson);
 

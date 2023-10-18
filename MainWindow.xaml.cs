@@ -11,10 +11,10 @@ using System.Drawing;
 
 namespace Concursus
 {
-	/// <summary>
-	/// Interaction logic for MainWindow.xaml
-	/// </summary>
-	public partial class MainWindow : Window
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
     {
         List<Game> games = new List<Game>();
         public static Game selected_game;
@@ -61,7 +61,8 @@ namespace Concursus
 
             SetupGames();
 
-            if (!OnePathSet()) { 
+            if (!OnePathSet())
+            {
                 ShowSettings(false);
                 SetupGames();
             } // If no game path is set
@@ -80,8 +81,8 @@ namespace Concursus
 
             this.Title += $" - {App.APP_VERSION}";
 
-			RefreshData();
-		}
+            RefreshData();
+        }
 
         private Game.GameType GetDRMType(string path)
         {
@@ -98,54 +99,54 @@ namespace Concursus
             }
         }
 
-		private void SetupGames()
-		{
-			// Clear the existing list of games
-			games.Clear();
+        private void SetupGames()
+        {
+            // Clear the existing list of games
+            games.Clear();
 
-			// Path to the "GameData" folder
-			string gameDataFolderPath = "GameData";
+            // Path to the "GameData" folder
+            string gameDataFolderPath = "GameData";
 
-			// Check if the "GameData" folder exists
-			if (Directory.Exists(gameDataFolderPath))
-			{
-				// Get all JSON files in the "GameData" folder
-				string[] jsonFiles = Directory.GetFiles(gameDataFolderPath, "*.json");
+            // Check if the "GameData" folder exists
+            if (Directory.Exists(gameDataFolderPath))
+            {
+                // Get all JSON files in the "GameData" folder
+                string[] jsonFiles = Directory.GetFiles(gameDataFolderPath, "*.json");
 
-				foreach (string jsonFile in jsonFiles)
-				{
-					try
-					{
-						// Read the JSON content from the file
-						string jsonContent = File.ReadAllText(jsonFile);
+                foreach (string jsonFile in jsonFiles)
+                {
+                    try
+                    {
+                        // Read the JSON content from the file
+                        string jsonContent = File.ReadAllText(jsonFile);
 
-						// Deserialize the JSON content into a List<Game> object
-						List<Game> gameList = JsonConvert.DeserializeObject<List<Game>>(jsonContent);
+                        // Deserialize the JSON content into a List<Game> object
+                        List<Game> gameList = JsonConvert.DeserializeObject<List<Game>>(jsonContent);
 
-						for (int i = 0; i < gameList.Count; i++)
-						{
-							gameList[i].GameMods = Game.GetModsFromPath(gameList[i].GamePath);
-						}
+                        for (int i = 0; i < gameList.Count; i++)
+                        {
+                            gameList[i].GameMods = Game.GetModsFromPath(gameList[i].GamePath);
+                        }
 
-						// Add the game(s) to the games list
-						games.AddRange(gameList);
-					}
-					catch (Exception ex)
-					{
-						// Handle any errors that occur during deserialization
-						MessageBox.Show($"Error reading or deserializing {jsonFile}: {ex.Message}");
-					}
-				}
-			}
+                        // Add the game(s) to the games list
+                        games.AddRange(gameList);
+                    }
+                    catch (Exception ex)
+                    {
+                        // Handle any errors that occur during deserialization
+                        MessageBox.Show($"Error reading or deserializing {jsonFile}: {ex.Message}");
+                    }
+                }
+            }
 
-			// Load additional data for each game
-			foreach (Game game in games)
-			{
-				game.LoadDataFromKey();
-			}
-		}
+            // Load additional data for each game
+            foreach (Game game in games)
+            {
+                game.LoadDataFromKey();
+            }
+        }
 
-		private void btnMoveDown_Click(object sender, RoutedEventArgs e)
+        private void btnMoveDown_Click(object sender, RoutedEventArgs e)
         {
             if (dataMods.SelectedIndex == -1)
                 return;
@@ -205,19 +206,19 @@ namespace Concursus
             settings.ShowDialog();
         }
 
-		private void cboGames_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			selected_game = (Game)(cboGames.SelectedItem);
-			current_mods = selected_game.GameMods;
-			dataMods.ItemsSource = current_mods;
-			if (selected_game != null) 
-			{
-				dataMods.CellEditEnding -= dataMods_CellEditEnding; // Remove
-				dataMods.CellEditEnding += dataMods_CellEditEnding; // Attach you fuck
-			}
-		}
+        private void cboGames_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            selected_game = (Game)(cboGames.SelectedItem);
+            current_mods = selected_game.GameMods;
+            dataMods.ItemsSource = current_mods;
+            if (selected_game != null)
+            {
+                dataMods.CellEditEnding -= dataMods_CellEditEnding; // Remove
+                dataMods.CellEditEnding += dataMods_CellEditEnding; // Attach you fuck
+            }
+        }
 
-		private void StartInstall()
+        private void StartInstall()
         {
             InstallProgress progressWindow = new InstallProgress(selected_game)
             {
@@ -262,77 +263,82 @@ namespace Concursus
             dataMods.ItemsSource = current_mods;
         }
 
-		protected override void OnContentRendered(EventArgs e)
-		{
-			base.OnContentRendered(e);
+        protected override void OnContentRendered(EventArgs e)
+        {
+            base.OnContentRendered(e);
 
-			// Fix the ui
-			RefreshData();
+            // Fix the ui
+            RefreshData();
 
-			// Enable button because its needed for some reason?
-			btnRefresh.IsEnabled = true;
-		}
+            // Enable button because its needed for some reason?
+            btnRefresh.IsEnabled = true;
+        }
 
-		private void btnRefresh_Click(object sender, RoutedEventArgs e)
-		{
-			RefreshData();
-		}
+        private void btnRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            RefreshData();
+        }
 
-		private void RefreshData()
-		{
-			selected_game.Refresh();
-			current_mods = selected_game.GameMods;
-			dataMods.ItemsSource = current_mods;
-		}
+        private void RefreshData()
+        {
+            selected_game.Refresh();
+            current_mods = selected_game.GameMods;
+            dataMods.ItemsSource = current_mods;
+        }
 
-		private void Naoto_Window(object sender, RoutedEventArgs e)
-		{
-			double maxWindowWidth = SystemParameters.WorkArea.Width * 1; //resize to whatever you want 1 = main monitor size, so 0.5 for half, 2 for double, etc
-			this.MaxWidth = maxWindowWidth;
-		}
+        private void Naoto_Window(object sender, RoutedEventArgs e)
+        {
+            double maxWindowWidth = SystemParameters.WorkArea.Width * 1; //resize to whatever you want 1 = main monitor size, so 0.5 for half, 2 for double, etc
+            this.MaxWidth = maxWindowWidth;
+        }
 
-		private void dataMods_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
-		{
-			Mod editedMod = (Mod)dataMods.SelectedItem;
-			ModConfig newConfig = new ModConfig
-			{
-				name = editedMod.Name,
-				author = editedMod.Author,
-				version = editedMod.Version,
-				description = editedMod.Description
-			};
+        private void dataMods_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            Mod editedMod = (Mod)dataMods.SelectedItem;
+            ModConfig newConfig = new ModConfig
+            {
+                name = editedMod.Name,
+                author = editedMod.Author,
+                version = editedMod.Version,
+                description = editedMod.Description
+            };
 
-			// Call the EditModConfig method to save the changes
-			selected_game.EditModConfig(editedMod, newConfig);
-		}
+            // Call the EditModConfig method to save the changes
+            selected_game.EditModConfig(editedMod, newConfig);
+        }
 
-		private void btnOpenRssFeed_Click(object sender, RoutedEventArgs e)
-		{
-			string rssFeedLink = GetRssFeedLinkForSelectedGame();
+        private void btnOpenRssFeed_Click(object sender, RoutedEventArgs e)
+        {
+            string rssFeedLink = GetRssFeedLinkForSelectedGame();
 
-			if (string.IsNullOrEmpty(rssFeedLink))
-			{
-				MessageBox.Show("Selected game does not have an associated RSS feed link.");
-				return;
-			}
+            if (string.IsNullOrEmpty(rssFeedLink))
+            {
+                MessageBox.Show("Selected game does not have an associated RSS feed link.");
+                return;
+            }
 
-			RSSWindow rssWindow = new RSSWindow(rssFeedLink);
-			rssWindow.Show();
-		}
+            RSSWindow rssWindow = new RSSWindow(rssFeedLink);
+            rssWindow.Show();
+        }
 
 		private string GetRssFeedLinkForSelectedGame()
 		{
-			switch (selected_game.key)
+			if (selected_game != null)
 			{
-				case "eo1_data":
-					return "https://api.gamebanana.com/Rss/New?gameid=18479&itemtype=Mod";
-				case "eo2_data":
-					return "https://api.gamebanana.com/Rss/New?gameid=18480&itemtype=Mod";
-				case "eo3_data":
-					return "https://api.gamebanana.com/Rss/New?gameid=18481&itemtype=Mod";
-				default:
-					return null;
+				// Check if the selected game has a "GBRSS" value in its data
+				if (selected_game.GBRSS > 0)
+				{
+					int GBRSSValue = selected_game.GBRSS;
+
+					// Show the GBRSS value in a popup dialog
+					MessageBox.Show($"GBRSS Value: {GBRSSValue}");
+
+					return $"https://api.gamebanana.com/Rss/New?gameid={GBRSSValue}&itemtype=Mod";
+				}
 			}
+
+			return null; // Return null if no RSS feed link is available
 		}
 	}
 }
+
