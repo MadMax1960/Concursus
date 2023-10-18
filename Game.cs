@@ -28,7 +28,8 @@ namespace Concursus
         public string GamePath { get; set; }
         public string GameExecutable { get; set; }
         public string GameFolderDataName { get; set; }
-        public GameType Type { get; set; }
+		public int GameID { get; set; } // Add the GameID property
+		public GameType Type { get; set; }
         public ObservableCollection<Mod> GameMods { get; set; }
         public IProgress<string> textProgress { get; set; }
         public static ObservableCollection<Mod> GetModsFromPath(string path)

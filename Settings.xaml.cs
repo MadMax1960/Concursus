@@ -39,6 +39,14 @@ namespace Concursus
 			this.Close();
 		}
 
+		private Dictionary<string, int> knownGameIDs = new Dictionary<string, int>
+{
+    { "SonicSuperstars.exe", 1965917 },
+	{ "SoulHackers2.exe", 45 },
+    // Add more entries for other known games as needed
+};
+
+
 		private void btnAddGame_Click(object sender, RoutedEventArgs e)
 		{
 			OpenFileDialog ofd = new OpenFileDialog();
@@ -60,6 +68,13 @@ namespace Concursus
 			string key = Path.GetFileNameWithoutExtension(exePath); // Remove ".exe" extension
 			string gameName = Path.GetFileName(Path.GetDirectoryName(exePath)); // Get the parent folder name
 
+			int gameID = 0; // Default to 0
+
+			if (knownGameIDs.ContainsKey(Path.GetFileName(exePath)))
+			{
+				gameID = knownGameIDs[Path.GetFileName(exePath)]; // Set the GameID if it's a known game
+			}
+
 			List<Game> games = new List<Game>();
 			games.Add(new Game()
 			{
@@ -67,7 +82,8 @@ namespace Concursus
 				GameName = gameName,
 				GameFolderDataName = Path.GetFileName(dataDir),
 				GamePath = Path.GetDirectoryName(exePath), // Use Path.GetDirectoryName(exePath)
-				GameExecutable = exePath
+				GameExecutable = exePath,
+				GameID = gameID // Set the GameID based on knownGameIDs
 			});
 
 			string gameJson = JsonConvert.SerializeObject(games, Formatting.Indented);
@@ -108,7 +124,8 @@ namespace Concursus
 				GameName = key, // You can use key as the default GameName
 				GameFolderDataName = GameFolderDataName,
 				GamePath = gamePath,
-				GameExecutable = Path.Combine(gamePath, $"{key}.exe") // Assuming the executable is named after the folder
+				GameExecutable = Path.Combine(gamePath, $"{key}.exe"), // Assuming the executable is named after the folder
+				GameID = 12345 // Set the GameID here with the desired value
 			});
 
 			string gameJson = JsonConvert.SerializeObject(games, Formatting.Indented);

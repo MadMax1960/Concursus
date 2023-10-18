@@ -15,7 +15,7 @@ namespace Concursus
     public partial class App : Application
     {
         private static Mutex _mutex = null;
-        public const string APP_VERSION = "0.1.0";
+        public const string APP_VERSION = "1.0.1";
         public const string APP_UPDATE_ENDPOINT = "https://api.github.com/repos/MadMax1960/Concursus";
         public const string OLD_FOLDER = "old";
         protected override void OnStartup(StartupEventArgs e)
