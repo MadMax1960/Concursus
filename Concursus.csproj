@@ -4,9 +4,9 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
-    <Product>Etrian Odyssey HD Mod Manager</Product>
-    <Version>2.0.0</Version>
-    <Authors>Coolsonickirby</Authors>
+    <Product>Concursus</Product>
+    <Version>1.0.1</Version>
+    <Authors>MadMax1960</Authors>
     <ApplicationIcon>icon2.ico</ApplicationIcon>
   </PropertyGroup>
 
