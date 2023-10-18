@@ -117,6 +117,14 @@ namespace Concursus
 
 			string key = Path.GetFileName(gamePath); // Get the folder name as key
 
+			int gameID = 0; // Default to 0
+
+			string gameIDInput = Interaction.InputBox("Enter Game ID:", "Add Game (Manual)", "");
+			if (!string.IsNullOrWhiteSpace(gameIDInput) && int.TryParse(gameIDInput, out int parsedGameID))
+			{
+				gameID = parsedGameID;
+			}
+
 			List<Game> games = new List<Game>();
 			games.Add(new Game()
 			{
@@ -125,7 +133,7 @@ namespace Concursus
 				GameFolderDataName = GameFolderDataName,
 				GamePath = gamePath,
 				GameExecutable = Path.Combine(gamePath, $"{key}.exe"), // Assuming the executable is named after the folder
-				GameID = 12345 // Set the GameID here with the desired value
+				GameID = gameID // Set the GameID here with the desired value or user input
 			});
 
 			string gameJson = JsonConvert.SerializeObject(games, Formatting.Indented);
