@@ -283,26 +283,42 @@ namespace Concursus
             textProgress.Report($"Assets file {output} is done writing!");
         }
 
-        public static void CreateNewCombinedBundle(string original, List<string> modded_paths, string output, IProgress<string> textProgress = null)
-        {
-            if (textProgress == null)
-                textProgress = new Progress<string>();
+		public static void CreateNewCombinedBundle(string original, List<string> modded_paths, string output, IProgress<string> textProgress = null)
+		{
+			if (textProgress == null)
+				textProgress = new Progress<string>();
 
+			// Add diagnostic prints
+			Console.WriteLine($"Original: {original}");
+			Console.WriteLine($"Modded Paths: {string.Join(", ", modded_paths)}");
+			Console.WriteLine($"Output: {output}");
 
-            if(modded_paths.Count == 1)
-            {
-                textProgress.Report($"Only one modded bundle instance found! Overwriting...");
-                File.Copy(modded_paths[0], output, true);
-                return;
-            }
+			if (original == null || modded_paths == null || output == null)
+			{
+				Console.WriteLine("Error: One of the paths is null. Cannot proceed.");
+				if (original == null)
+					Console.WriteLine("Original path is null.");
+				if (modded_paths == null)
+					Console.WriteLine("Modded paths list is null.");
+				if (output == null)
+					Console.WriteLine("Output path is null.");
+				return;
+			}
 
-            var am = new AssetsManager();
+			if (modded_paths.Count == 1)
+			{
+				Console.WriteLine("Only one modded bundle instance found! Overwriting...");
+				File.Copy(modded_paths[0], output, true);
+				return;
+			}
+
+			var am = new AssetsManager();
 
             // Original bundle file
             var og_bun = am.LoadBundleFile(original);
 
-            // Original Assets
-            var og_assetInst = am.LoadAssetsFileFromBundle(og_bun, 0, false);
+			// Original Assets
+			var og_assetInst = am.LoadAssetsFileFromBundle(og_bun, 0, false);
 
             // Original Asset Index -> CRC32 Hash
             Dictionary<long, uint> og_asset_hash = new Dictionary<long, uint>();

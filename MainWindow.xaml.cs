@@ -331,7 +331,7 @@ namespace Concursus
 					int GBRSSValue = selected_game.GBRSS;
 
 					// Show the GBRSS value in a popup dialog
-					MessageBox.Show($"GBRSS Value: {GBRSSValue}");
+					//MessageBox.Show($"GBRSS Value: {GBRSSValue}");
 
 					return $"https://api.gamebanana.com/Rss/New?gameid={GBRSSValue}&itemtype=Mod";
 				}

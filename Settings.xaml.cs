@@ -42,14 +42,14 @@ namespace Concursus
 		private Dictionary<string, int> knownGameIDs = new Dictionary<string, int>
 {
     { "SonicSuperstars.exe", 1965917 },
-	{ "SoulHackers2.exe", 45 },
+	{ "SOUL HACKERS2.exe", 45 },
     // Add more entries for other known games as needed
 };
 
 		private Dictionary<string, int> GBRSSValues = new Dictionary<string, int>
 {
 	{ "SonicSuperstars.exe", 18552 },
-	{ "SoulHackers2.exe", 17065 },
+	{ "SOUL HACKERS2.exe", 17065 },
 	{ "Etrian Odyssey.exe", 18479 },
 	{ "Etrian Odyssey 2.exe", 18480 },
 	{ "Etrian Odyssey 3.exe", 18481 },
@@ -59,7 +59,7 @@ namespace Concursus
 		private Dictionary<string, string> GBONECLICKValues = new Dictionary<string, string>
 {
 	{ "SonicSuperstars.exe", "SUPERSTARS" },
-	{ "SoulHackers2.exe", "SH2" },
+	{ "SOUL HACKERS2.exe", "SH2" },
 	{ "Etrian Odyssey.exe", "EOHD" },
 	{ "Etrian Odyssey 2.exe", "EO2HD" },
 	{ "Etrian Odyssey 3.exe", "EO3HD" }
