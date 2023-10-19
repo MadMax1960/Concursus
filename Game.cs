@@ -317,11 +317,23 @@ namespace Concursus
             // Original bundle file
             var og_bun = am.LoadBundleFile(original);
 
-			// Original Assets
-			var og_assetInst = am.LoadAssetsFileFromBundle(og_bun, 0, false);
+			AssetsFileInstance og_assetInst = null;  // Declare og_assetInst outside the try block
+			MessageBox.Show("Merging is broken right now! Please disable one of the mods that affect the same files for it to install properly.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
-            // Original Asset Index -> CRC32 Hash
-            Dictionary<long, uint> og_asset_hash = new Dictionary<long, uint>();
+			try
+			{
+				// Load the original assets file
+				og_assetInst = am.LoadAssetsFileFromBundle(og_bun, 0, false);
+
+			}
+			catch (Exception ex)
+			{
+				// Handle the exception as needed
+				Console.WriteLine("An exception occurred: " + ex.Message);
+				return;
+			}
+			// Original Asset Index -> CRC32 Hash
+			Dictionary<long, uint> og_asset_hash = new Dictionary<long, uint>();
 
             // Asset Index -> New Asset Replacer Object
             Dictionary<long, AssetsReplacer> idx_to_asset_replacement = new Dictionary<long, AssetsReplacer>();
