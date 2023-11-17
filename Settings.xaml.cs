@@ -54,7 +54,7 @@ namespace Concursus
 	{ "Etrian Odyssey.exe", 18479 },
 	{ "Etrian Odyssey 2.exe", 18480 },
 	{ "Etrian Odyssey 3.exe", 18481 },
-	{ "Persona 5 Tactica.exe", NA },
+	{ "Persona 5 Tactica.exe", 18918 },
     // Add more entries for other known games as needed
 };
 
