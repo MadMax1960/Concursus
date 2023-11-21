@@ -575,12 +575,14 @@ namespace Concursus
 		}
 		private void CopyPluginsFromMods()
 		{
+			// Get a list of all files in the game path
+			List<string> existingFiles = Directory.GetFiles(this.GamePath, "*", SearchOption.AllDirectories)
+												  .Select(file => Path.GetRelativePath(this.GamePath, file))
+												  .ToList();
+
 			// Iterate through each mod's "plugins" folder and copy its contents to the root of the game path
 			foreach (Mod mod in this.GameMods)
 			{
-				if (!mod.enabled)
-					continue;
-
 				string modPluginsFolder = Path.Combine(mod.mod_path, "plugins");
 
 				// Check if the mod has a "plugins" folder
@@ -590,6 +592,23 @@ namespace Concursus
 
 					// Copy the contents of the mod's "plugins" folder to the root of the game path
 					CopyDirectoryContents(modPluginsFolder, this.GamePath);
+
+					// If the mod is not enabled, delete its files from the game path
+					if (!mod.enabled)
+					{
+						foreach (string file in Directory.GetFiles(modPluginsFolder, "*", SearchOption.AllDirectories))
+						{
+							string relativeFilePath = Path.GetRelativePath(modPluginsFolder, file);
+							string fullPath = Path.Combine(this.GamePath, relativeFilePath);
+
+							// Check if the file exists in the game path and delete it
+							if (existingFiles.Contains(relativeFilePath))
+							{
+								this.textProgress.Report($"Deleting file {relativeFilePath} from {mod.Name}...");
+								File.Delete(fullPath);
+							}
+						}
+					}
 				}
 			}
 		}
