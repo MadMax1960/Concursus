@@ -65,12 +65,12 @@ namespace Concursus
 
             if(mod.mod_dir_path == "mods")
             {
-                MessageBox.Show($"{mod.game_name} path has not been set yet! Please set it in the normal manager first before trying to install mods for it.", "Path not set", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"{mod.GameName} path has not been set yet! Please set it in the normal manager first before trying to install mods for it.", "Path not set", MessageBoxButton.OK, MessageBoxImage.Error);
                 Environment.Exit(-1);
             }
 
-            this.Title = $"Download {mod.name} for {mod.game_name}";
-            this.txtGame.Text = mod.game_name;
+            this.Title = $"Download {mod.name} for {mod.GameName}";
+            this.txtGame.Text = mod.GameName;
             this.txtModName.Text = mod.name;
             this.txtSubmitter.Text = mod.submitter;
             this.txtVersion.Text = mod.version;
@@ -122,19 +122,19 @@ namespace Concursus
                 foreach(var entry in archiveFile.Entries)
                 {
                     List<string> split = entry.FileName.Split(new char[] { '\\', '/' }).ToList();
-                    int idx = split.IndexOf(mod.game_data_folder_name);
+                    int idx = split.IndexOf(mod.GameFolderDataName);
                     if (idx != -1)
                     {
                         if(idx == 0) // If the data folder is the parent folder in the archive, then make a new folder manually
                         {
-                            txtProgress.Text += $"{mod.game_data_folder_name} does not have a parent! Creating new parent name...\n";
+                            txtProgress.Text += $"{mod.GameFolderDataName} does not have a parent! Creating new parent name...\n";
                             parent = mod.GetValidFolderName();
                             output_dir = System.IO.Path.Combine(output_dir, mod.GetValidFolderName());
                             found_data_dir = true;
                             break;
                         } else if(idx == 1)
                         {
-                            txtProgress.Text += $"{mod.game_data_folder_name} has a parent! Storing parent name...\n";
+                            txtProgress.Text += $"{mod.GameFolderDataName} has a parent! Storing parent name...\n";
                             parent = split[idx - 1];
                             found_data_dir = true;
                             break;

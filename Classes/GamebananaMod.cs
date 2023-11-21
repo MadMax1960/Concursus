@@ -29,8 +29,8 @@ namespace Concursus.Classes
 		public string version { get; set; }
 		public List<string> images { get; set; }
 		public string mod_dir_path { get; set; }
-		public string game_data_folder_name { get; set; }
-		public string game_name { get; set; }
+		public string GameFolderDataName { get; set; }
+		public string GameName { get; set; }
 		GamebananaMod()
 		{
 
@@ -81,20 +81,20 @@ namespace Concursus.Classes
 				mod.version = "???";
 
 			string game_name = (string)jsonObj[0].AsValue();
-			mod.game_name = game_name;
+			mod.GameName = game_name;
 			switch (game_name)
 			{
 				case "Etrian Odyssey HD":
 					mod.mod_dir_path = Path.Combine(Properties.Settings.Default.EO1_Path, "mods");
-					mod.game_data_folder_name = "Etrian Odyssey_Data";
+					mod.GameFolderDataName = "Etrian Odyssey_Data";
 					break;
 				case "Etrian Odyssey II HD":
 					mod.mod_dir_path = Path.Combine(Properties.Settings.Default.EO2_Path, "mods");
-					mod.game_data_folder_name = "Etrian Odyssey 2_Data";
+					mod.GameFolderDataName = "Etrian Odyssey 2_Data";
 					break;
 				case "Etrian Odyssey III HD":
 					mod.mod_dir_path = Path.Combine(Properties.Settings.Default.EO3_Path, "mods");
-					mod.game_data_folder_name = "Etrian Odyssey 3_Data";
+					mod.GameFolderDataName = "Etrian Odyssey 3_Data";
 					break;
 				default:
 					return null;
