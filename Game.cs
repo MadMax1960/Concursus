@@ -319,7 +319,25 @@ namespace Concursus
 			var og_bun = am.LoadBundleFile(original);
 
 			// Original Assets
-			var og_assetInst = am.LoadAssetsFileFromBundle(og_bun, 0, false);
+			//var og_assetInst = am.LoadAssetsFileFromBundle(og_bun, 0, false);
+			AssetsFileInstance og_assetInst = null;  // Declare og_assetInst outside the try block
+			MessageBox.Show("Merging is broken right now! Please disable one of the mods that affect the same files for it to install properly.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+			// Original Asset Index -> CRC32 Hash
+			//Dictionary<long, uint> og_asset_hash = new Dictionary<long, uint>();
+
+			try
+			{
+				// Load the original assets file
+				og_assetInst = am.LoadAssetsFileFromBundle(og_bun, 0, false);
+
+			}
+			catch (Exception ex)
+			{
+				// Handle the exception as needed
+				Console.WriteLine("An exception occurred: " + ex.Message);
+				return;
+			}
 
 			// Original Asset Index -> CRC32 Hash
 			Dictionary<long, uint> og_asset_hash = new Dictionary<long, uint>();
@@ -470,6 +488,12 @@ namespace Concursus
 
 		public void Install()
 		{
+			// Display a popup box with the game ID
+			//MessageBox.Show($"Installing game with ID: {GameID}", "Installation Started", MessageBoxButton.OK, MessageBoxImage.Information);
+
+			this.textProgress.Report("Copying plugins from mods...");
+			CopyPluginsFromMods();
+
 			this.textProgress.Report("Patching catalog.json...");
 			PatchGame();
 			this.textProgress.Report("Restoring backups for original files...");
@@ -548,6 +572,48 @@ namespace Concursus
 
 			// Save the updated configuration to the parent directory because im too lazy to fix it saving in new thing
 			File.WriteAllText(Path.Combine(parentDirectory, ModConfig.CONFIG_FILE), serializedConfig);
+		}
+		private void CopyPluginsFromMods()
+		{
+			// Iterate through each mod's "plugins" folder and copy its contents to the root of the game path
+			foreach (Mod mod in this.GameMods)
+			{
+				if (!mod.enabled)
+					continue;
+
+				string modPluginsFolder = Path.Combine(mod.mod_path, "plugins");
+
+				// Check if the mod has a "plugins" folder
+				if (Directory.Exists(modPluginsFolder))
+				{
+					this.textProgress.Report($"Copying plugins from {mod.Name}...");
+
+					// Copy the contents of the mod's "plugins" folder to the root of the game path
+					CopyDirectoryContents(modPluginsFolder, this.GamePath);
+				}
+			}
+		}
+		private void CopyDirectoryContents(string sourceDir, string targetDir)
+		{
+			// Create the target directory if it doesn't exist
+			if (!Directory.Exists(targetDir))
+				Directory.CreateDirectory(targetDir);
+
+			// Copy each file in the source directory to the target directory
+			foreach (string sourceFile in Directory.GetFiles(sourceDir))
+			{
+				string fileName = Path.GetFileName(sourceFile);
+				string destFile = Path.Combine(targetDir, fileName);
+				File.Copy(sourceFile, destFile, true);
+			}
+
+			// Copy each subdirectory in the source directory to the target directory
+			foreach (string sourceSubDir in Directory.GetDirectories(sourceDir))
+			{
+				string subDirName = Path.GetFileName(sourceSubDir);
+				string destSubDir = Path.Combine(targetDir, subDirName);
+				CopyDirectoryContents(sourceSubDir, destSubDir);
+			}
 		}
 	}
 }
