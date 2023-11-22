@@ -157,7 +157,7 @@ namespace Concursus
                         } else
                         {
                             MessageBox.Show("Archive has a invalid structure! Aborting the operation.", "Invalid Structure", MessageBoxButton.OK, MessageBoxImage.Error);
-                            Environment.Exit(-1);
+                            this.Close();
                         }
                     }
                 }
@@ -165,7 +165,7 @@ namespace Concursus
                 if (!found_data_dir)
                 {
                     MessageBox.Show("Archive has a invalid structure! Aborting the operation.", "Invalid Structure", MessageBoxButton.OK, MessageBoxImage.Error);
-                    Environment.Exit(-1);
+                    this.Close();
                 }
 
                 archiveFile.Extract(output_dir);
@@ -179,7 +179,7 @@ namespace Concursus
             }
             txtProgress.Text += $"Finished downloading {mod.name}! Closing the window in 5 seconds...\n";
             await Task.Delay(TimeSpan.FromSeconds(5));
-            Environment.Exit(0);
+            this.Close();
         }
 		private void toggleImage_Click(object sender, RoutedEventArgs e)
 		{
