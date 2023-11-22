@@ -104,6 +104,11 @@ namespace Concursus
 			{
 				GBRSS = GBRSSValues[Path.GetFileName(exePath)]; // Set GBRSS as an int
 			}
+			else
+			{
+				// GBRSS not found, prompt user for manual input
+				GBRSS = PromptForGBRSS();
+			}
 
 			if (GBONECLICKValues.ContainsKey(Path.GetFileName(exePath)))
 			{
@@ -136,6 +141,22 @@ namespace Concursus
 
 			MessageBox.Show("Game added and JSON data saved!");
 		}
+
+		private int PromptForGBRSS()
+		{
+			string input = Interaction.InputBox("Enter GB Game ID (0 if you don't know):", "Add Game (Manual)", "");
+
+			if (int.TryParse(input, out int result))
+			{
+				return result;
+			}
+			else
+			{
+				MessageBox.Show("Invalid GBRSS value. Please enter a valid integer.");
+				return PromptForGBRSS(); // Recursive call until a valid input is provided
+			}
+		}
+
 
 		private void btnManualAdd_Click(object sender, RoutedEventArgs e)
 		{
