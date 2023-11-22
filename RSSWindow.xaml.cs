@@ -10,16 +10,20 @@ using System.Xml.Linq;
 using System.Net;
 using System.IO;
 using System.Diagnostics;
+using Concursus;
 
 namespace YourNamespace
 {
 	public partial class RSSWindow : Window
 	{
 		private string rssFeedLink;
+		private string game_id;
 
 		public RSSWindow(string rssFeedLink)
 		{
 			this.rssFeedLink = rssFeedLink;
+			int end_len = rssFeedLink.IndexOf('&') - (rssFeedLink.IndexOf('=') + 1);
+            this.game_id = rssFeedLink.Substring(rssFeedLink.IndexOf('=') + 1, end_len);
 			InitializeComponent();
 			LoadRSSFeed();
 		}
@@ -110,23 +114,7 @@ namespace YourNamespace
 				
 				if (button.DataContext is RssItem rssItem)
 				{
-					
-					string downloadLink = $"eohdmm://{rssItem.ModId}";
-
-					try
-					{
-						
-						ProcessStartInfo psi = new ProcessStartInfo
-						{
-							FileName = downloadLink,
-							UseShellExecute = true
-						};
-						Process.Start(psi);
-					}
-					catch (Exception ex)
-					{
-						MessageBox.Show($"Failed to open link: {ex.Message}");
-					}
+					new GBModPrompt(game_id, rssItem.ModId.ToString()).ShowDialog();
 				}
 			}
 		}

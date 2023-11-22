@@ -13,7 +13,8 @@ namespace Concursus
 {
     public class Utils
     {
-        public const string MM_PROTOCOL = "eohdmm";
+        public const string MM_PROTOCOL = "concursus";
+        public const string MM_PROTOCOL_LINK = $"{MM_PROTOCOL}://";
         public static void RegisterProtocol(string protocol, string title) {
             if(protocol == String.Empty)
                 return;

@@ -59,17 +59,17 @@ namespace Concursus
             //    enabled = false
             //});
 
-            SetupGames();
+            SetupGames(ref games);
 
             if (!OnePathSet())
             {
                 ShowSettings(false);
-                SetupGames();
+                SetupGames(ref games);
             } // If no game path is set
             if (!OnePathSet()) // If no game path is set and we already asked the user for one but they refused, then just close
                 Environment.Exit(0);
 
-            SetupGames();
+            SetupGames(ref games);
 			InitializeComponent();
 
 			// Set the initial width to half of the screen width
@@ -108,20 +108,21 @@ namespace Concursus
             }
         }
 
-        private void SetupGames()
+        public static void SetupGames(ref List<Game> games_ref)
         {
+            if (games_ref == null)
+                games_ref = new List<Game>();
+
             // Clear the existing list of games
-            games.Clear();
+            games_ref.Clear();
 
             // Path to the "GameData" folder
-            string gameDataFolderPath = "GameData";
-
+            string gameDataFolderPath = Path.Join(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "GameData");
             // Check if the "GameData" folder exists
             if (Directory.Exists(gameDataFolderPath))
             {
                 // Get all JSON files in the "GameData" folder
                 string[] jsonFiles = Directory.GetFiles(gameDataFolderPath, "*.json");
-
                 foreach (string jsonFile in jsonFiles)
                 {
                     try
@@ -138,7 +139,7 @@ namespace Concursus
                         }
 
                         // Add the game(s) to the games list
-                        games.AddRange(gameList);
+                        games_ref.AddRange(gameList);
                     }
                     catch (Exception ex)
                     {
@@ -149,7 +150,7 @@ namespace Concursus
             }
 
             // Load additional data for each game
-            foreach (Game game in games)
+            foreach (Game game in games_ref)
             {
                 game.LoadDataFromKey();
             }

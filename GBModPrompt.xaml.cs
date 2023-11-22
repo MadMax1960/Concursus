@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -42,20 +43,35 @@ namespace Concursus
 
         public GBModPrompt()
         {
-            this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            string[] args = Environment.GetCommandLineArgs();
-            if (args.Length != 2)
-                return;
+            new GBModPrompt(null, null).ShowDialog();
+            this.Close();
+        }
 
-            string arg = args[1];
-            if (arg.StartsWith(Utils.MM_PROTOCOL + ':'))
-                arg = arg.Substring((Utils.MM_PROTOCOL + ':').Length);
-            string mod_id = String.Join(null, arg.Split(new char[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries));
+        public GBModPrompt(string game_id = null, string mod_id = null)
+        {
+            this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            
+            if(game_id == null && mod_id == null)
+            {
+                string[] args = Environment.GetCommandLineArgs();
+                if (args.Length != 2)
+                    return;
+
+                string arg = args[1];
+                if (arg.StartsWith(Utils.MM_PROTOCOL_LINK))
+                    arg = arg.Substring((Utils.MM_PROTOCOL_LINK).Length);
+
+                string[] res = arg.Trim().Split('-');
+                if (res.Length != 2)
+                    return;
+                game_id = res[0];
+                mod_id = res[1];
+            }
+
+            mod = GamebananaMod.GetModInfoFromID(game_id, mod_id);
 
             InitializeComponent();
             Themes.UpdateForm(Themes.CURRENT_THEME, this);
-
-            mod = GamebananaMod.GetModInfoFromID(mod_id);
 
             if (mod == null)
             {

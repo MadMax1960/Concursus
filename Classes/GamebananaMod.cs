@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Concursus.Classes
 {
@@ -31,14 +32,26 @@ namespace Concursus.Classes
 		public string mod_dir_path { get; set; }
 		public string GameFolderDataName { get; set; }
 		public string GameName { get; set; }
+		public static List<Game> GAMES;
 		GamebananaMod()
 		{
-
+			
 		}
 
-		public static GamebananaMod ParseFromJson(string text)
+		public static GamebananaMod ParseFromJson(string game_id, string text)
 		{
-			GamebananaMod mod = new GamebananaMod();
+			if (GAMES == null)
+				MainWindow.SetupGames(ref GamebananaMod.GAMES);
+
+			Game? target_game = GAMES.Find(game => game.GBRSS.ToString() == game_id);
+			if(target_game == null)
+			{
+				MessageBox.Show(GAMES.Count.ToString());
+				MessageBox.Show($"Game with Gamebanana ID {game_id} not found!", "No matching game found", MessageBoxButton.OK, MessageBoxImage.Error);
+				return null;
+			}
+
+            GamebananaMod mod = new GamebananaMod();
 			Console.WriteLine(text);
 			JsonArray? jsonObj = JsonSerializer.Deserialize<JsonArray>(text);
 			if (jsonObj == null)
@@ -82,23 +95,8 @@ namespace Concursus.Classes
 
 			string game_name = (string)jsonObj[0].AsValue();
 			mod.GameName = game_name;
-			switch (game_name)
-			{
-				case "Etrian Odyssey HD":
-					mod.mod_dir_path = Path.Combine(Properties.Settings.Default.EO1_Path, "mods");
-					mod.GameFolderDataName = "Etrian Odyssey_Data";
-					break;
-				case "Etrian Odyssey II HD":
-					mod.mod_dir_path = Path.Combine(Properties.Settings.Default.EO2_Path, "mods");
-					mod.GameFolderDataName = "Etrian Odyssey 2_Data";
-					break;
-				case "Etrian Odyssey III HD":
-					mod.mod_dir_path = Path.Combine(Properties.Settings.Default.EO3_Path, "mods");
-					mod.GameFolderDataName = "Etrian Odyssey 3_Data";
-					break;
-				default:
-					return null;
-			}
+            mod.mod_dir_path = Path.Combine(target_game.GamePath, "mods");
+            mod.GameFolderDataName = target_game.GameFolderDataName;
 
 			return mod;
 		}
@@ -122,14 +120,14 @@ namespace Concursus.Classes
 			};
 		}
 
-		public static GamebananaMod GetModInfoFromID(string mod_id)
+		public static GamebananaMod GetModInfoFromID(string game_id, string mod_id)
 		{
 			string url = MOD_INFO_ENDPOINT.Replace("<MOD_ID>", mod_id);
 			Console.WriteLine(mod_id);
 			string json = Utils.GetTextFromURL(url);
 			if (json == null)
 				return null;
-			GamebananaMod mod = GamebananaMod.ParseFromJson(json);
+			GamebananaMod mod = GamebananaMod.ParseFromJson(game_id, json);
 			mod.mod_id = mod_id;
 			return mod;
 		}
