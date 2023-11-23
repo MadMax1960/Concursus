@@ -23,8 +23,12 @@ namespace YourNamespace
 		{
 			this.rssFeedLink = rssFeedLink;
 			int end_len = rssFeedLink.IndexOf('&') - (rssFeedLink.IndexOf('=') + 1);
-            this.game_id = rssFeedLink.Substring(rssFeedLink.IndexOf('=') + 1, end_len);
+			this.game_id = rssFeedLink.Substring(rssFeedLink.IndexOf('=') + 1, end_len);
 			InitializeComponent();
+
+			// Apply the theme
+			Themes.UpdateForm(Themes.CURRENT_THEME, this);
+
 			LoadRSSFeed();
 		}
 
@@ -108,13 +112,14 @@ namespace YourNamespace
 
 		private void DownloadButton_Click(object sender, RoutedEventArgs e)
 		{
-			
 			if (sender is Button button)
 			{
-				
 				if (button.DataContext is RssItem rssItem)
 				{
-					new GBModPrompt(game_id, rssItem.ModId.ToString()).ShowDialog();
+					// Apply the theme to the GBModPrompt window
+					GBModPrompt modPrompt = new GBModPrompt(game_id, rssItem.ModId.ToString());
+					Themes.UpdateForm(Themes.CURRENT_THEME, modPrompt);
+					modPrompt.ShowDialog();
 				}
 			}
 		}
