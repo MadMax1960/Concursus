@@ -61,7 +61,7 @@ namespace Concursus
                 if (arg.StartsWith(Utils.MM_PROTOCOL_LINK))
                     arg = arg.Substring((Utils.MM_PROTOCOL_LINK).Length);
 
-                string[] res = arg.Trim().Split('_');
+                string[] res = arg.Trim().Replace("\\", "/").Trim('/').Split('_');
                 if (res.Length != 2)
                     return;
                 game_id = res[0];
