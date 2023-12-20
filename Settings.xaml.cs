@@ -44,6 +44,7 @@ namespace Concursus
     { "SonicSuperstars.exe", 1965917 },
 	{ "SOUL HACKERS2.exe", 45 },
 	{ "Persona 5 Tactica.exe", 10 },
+	{ "Bomb Rush Cyberfunk.exe", 11 },
     // Add more entries for other known games as needed
 };
 
@@ -55,6 +56,7 @@ namespace Concursus
 	{ "Etrian Odyssey 2.exe", 18480 },
 	{ "Etrian Odyssey 3.exe", 18481 },
 	{ "Persona 5 Tactica.exe", 18918 },
+	{ "Bomb Rush Cyberfunk.exe", 18955 },
     // Add more entries for other known games as needed
 };
 
@@ -65,7 +67,8 @@ namespace Concursus
 	{ "Etrian Odyssey.exe", "EOHD" },
 	{ "Etrian Odyssey 2.exe", "EO2HD" },
 	{ "Etrian Odyssey 3.exe", "EO3HD" },
-	{ "Persona 5 Tactica.exe", "P5T" }
+	{ "Persona 5 Tactica.exe", "P5T" },
+	{ "Bomb Rush Cyberfunk.exe", "BRC" }
     // Add more entries for other known games as needed
 };
 
