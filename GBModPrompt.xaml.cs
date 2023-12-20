@@ -132,14 +132,31 @@ namespace Concursus
             txtProgress.Text += $"Reading archive...\n";
             string parent = "";
             bool found_data_dir = false;
-            using (MemoryStream stream = new MemoryStream(data))
+			bool foundCBBFile = false;
+			using (MemoryStream stream = new MemoryStream(data))
             using(ArchiveFile archiveFile = new ArchiveFile(stream))
             {
-                foreach(var entry in archiveFile.Entries)
-                {
-                    List<string> split = entry.FileName.Split(new char[] { '\\', '/' }).ToList();
-                    int idx = split.IndexOf(mod.GameFolderDataName);
-                    if (idx != -1)
+				foreach (var entry in archiveFile.Entries)
+				{
+					List<string> split = entry.FileName.Split(new char[] { '\\', '/' }).ToList();
+					int idx = split.IndexOf(mod.GameFolderDataName);
+
+					if (entry.FileName.EndsWith(".cbb", StringComparison.OrdinalIgnoreCase))
+					{
+						// Handle ".cbb" file separately (you can customize this part)
+						foundCBBFile = true;
+						// Perform actions for ".cbb" file, such as downloading or extracting
+						// ...
+
+						// You may choose to break here if you want to ignore other entries
+						continue;
+					}
+					if (foundCBBFile)
+					{
+						// You can add specific actions or messages for the ".cbb" file case
+						txtProgress.Text += $"Found a .cbb file! Handling it separately...\n";
+					}
+					if (idx != -1)
                     {
                         if(idx == 0) // If the data folder is the parent folder in the archive, then make a new folder manually
                         {
@@ -162,13 +179,15 @@ namespace Concursus
                     }
                 }
 
-                if (!found_data_dir)
-                {
-                    MessageBox.Show("Archive has a invalid structure! Aborting the operation.", "Invalid Structure", MessageBoxButton.OK, MessageBoxImage.Error);
-                    this.Close();
-                }
+				// Existing code for handling the case when mod.GameFolderDataName is not found
+				// Replace it with the following code
+				if (!found_data_dir && !foundCBBFile)
+				{
+					MessageBox.Show("Archive has an invalid structure! Aborting the operation.", "Invalid Structure", MessageBoxButton.OK, MessageBoxImage.Error);
+					this.Close();
+				}
 
-                archiveFile.Extract(output_dir);
+				archiveFile.Extract(output_dir);
             }
 
             string config_dir = System.IO.Path.Combine(mod.mod_dir_path, parent);
