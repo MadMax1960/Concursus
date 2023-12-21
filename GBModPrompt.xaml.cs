@@ -151,10 +151,64 @@ namespace Concursus
 						// You may choose to break here if you want to ignore other entries
 						continue;
 					}
+					// Existing code...
+
 					if (foundCBBFile)
 					{
 						// You can add specific actions or messages for the ".cbb" file case
 						txtProgress.Text += $"Found a .cbb file! Handling it separately...\n";
+						parent = mod.GetValidFolderName();
+						output_dir = System.IO.Path.Combine(output_dir, mod.GetValidFolderName());
+						found_data_dir = true;
+
+						// Create the required directory structure inside the mod folder
+						string pluginsFolder = System.IO.Path.Combine(output_dir, "plugins");
+						string bepInExFolder = System.IO.Path.Combine(pluginsFolder, "BepInEx");
+						string configFolder = System.IO.Path.Combine(bepInExFolder, "config");
+						string crewBoomFolder = System.IO.Path.Combine(configFolder, "CrewBoom");
+
+						// Check if the directories exist, and create them if not
+						if (!Directory.Exists(pluginsFolder)) Directory.CreateDirectory(pluginsFolder);
+						if (!Directory.Exists(bepInExFolder)) Directory.CreateDirectory(bepInExFolder);
+						if (!Directory.Exists(configFolder)) Directory.CreateDirectory(configFolder);
+						if (!Directory.Exists(crewBoomFolder)) Directory.CreateDirectory(crewBoomFolder);
+
+						// Move .cbb and .json files to the CrewBoom folder
+						foreach (var fileEntry in archiveFile.Entries)
+						{
+							string entryFileName = fileEntry.FileName;
+
+							if (entryFileName.EndsWith(".cbb", StringComparison.OrdinalIgnoreCase) ||
+								entryFileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+							{
+								// Construct the destination path inside the CrewBoom folder
+								string destinationPath = System.IO.Path.Combine(crewBoomFolder, System.IO.Path.GetFileName(entryFileName));
+
+								if (entryFileName.EndsWith(".cbb", StringComparison.OrdinalIgnoreCase))
+								{
+									// For .cbb files, read the content into a MemoryStream and then write to the destination
+									using (MemoryStream memoryStream = new MemoryStream())
+									{
+										fileEntry.Extract(memoryStream);
+										File.WriteAllBytes(destinationPath, memoryStream.ToArray());
+									}
+								}
+								else
+								{
+									// For other files, extract and move as before
+									using (FileStream fs = File.Create(destinationPath))
+									{
+										fileEntry.Extract(fs);
+									}
+								}
+
+								// Optionally, you can add a message to indicate the file move
+								txtProgress.Text += $"Moved {entryFileName} to CrewBoom folder.\n";
+
+								string dataFolder = System.IO.Path.Combine(output_dir, mod.GameFolderDataName);
+								if (!Directory.Exists(dataFolder)) Directory.CreateDirectory(dataFolder);
+							}
+						}
 					}
 					if (idx != -1)
 					{
