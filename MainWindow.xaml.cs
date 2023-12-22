@@ -72,14 +72,6 @@ namespace Concursus
             SetupGames(ref games);
 			InitializeComponent();
 
-			// Set the initial width to half of the screen width
-			double initialWindowWidth = SystemParameters.WorkArea.Width * 0.5;
-			this.Width = initialWindowWidth;
-
-			// Set the MaxWidth to allow fullscreen up to the maximum screen width
-			double maxWindowWidth = SystemParameters.WorkArea.Width * 1;
-			this.MaxWidth = maxWindowWidth;
-
 			cboGames.ItemsSource = games;
             cboGames.SelectedIndex = 0;
             dataMods.AutoGenerateColumns = false;

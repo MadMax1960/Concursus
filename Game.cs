@@ -442,10 +442,38 @@ namespace Concursus
 
 		public void CreateNewMod(string folder_name, ModConfig config)
 		{
+			// Combine the game path, "Mods" folder, and the new mod folder name
 			string target_dir = Path.Combine(this.GamePath, Game.MODS_FOLDER, folder_name);
+
+			// Check if the mod folder doesn't already exist
 			if (!Directory.Exists(target_dir))
-				Directory.CreateDirectory(target_dir);
+				Directory.CreateDirectory(target_dir); // Create the mod folder
+
+			// Get the GameFolderDataName from the selected game
+			string gameFolderDataName = this.GameFolderDataName; // Replace with the actual property or variable name
+
+			// Create a new folder inside the mod folder based on GameFolderDataName
+			string subfolder_path = Path.Combine(target_dir, gameFolderDataName);
+			Directory.CreateDirectory(subfolder_path); // Create the subfolder
+
+			// Create a "plugins" folder inside the mod folder
+			string pluginsFolderPath = Path.Combine(target_dir, "plugins");
+			Directory.CreateDirectory(pluginsFolderPath); // Create the plugins folder
+
+			// Create a folder structure inside the GameFolderDataName folder
+			string streamingAssetsPath = Path.Combine(subfolder_path, "StreamingAssets");
+			string aaPath = Path.Combine(streamingAssetsPath, "aa");
+			string standaloneWindows64Path = Path.Combine(aaPath, "StandaloneWindows64");
+
+			// Create the folder structure
+			Directory.CreateDirectory(streamingAssetsPath);
+			Directory.CreateDirectory(aaPath);
+			Directory.CreateDirectory(standaloneWindows64Path);
+
+			// Write the mod configuration to a file within the mod folder
 			File.WriteAllText(Path.Combine(target_dir, ModConfig.CONFIG_FILE), JsonSerializer.Serialize(config));
+
+			// Refresh the game data (presumably to update the list of mods)
 			this.Refresh();
 		}
 
@@ -580,8 +608,8 @@ namespace Concursus
 												  .Select(file => Path.GetRelativePath(this.GamePath, file))
 												  .ToList();
 
-			// Iterate through each mod's "plugins" folder and copy its contents to the root of the game path
-			foreach (Mod mod in this.GameMods)
+			// First iteration: Copy plugins from enabled mods
+			foreach (Mod mod in this.GameMods.Where(mod => mod.enabled))
 			{
 				string modPluginsFolder = Path.Combine(mod.mod_path, "plugins");
 
@@ -592,21 +620,27 @@ namespace Concursus
 
 					// Copy the contents of the mod's "plugins" folder to the root of the game path
 					CopyDirectoryContents(modPluginsFolder, this.GamePath);
+				}
+			}
 
-					// If the mod is not enabled, delete its files from the game path
-					if (!mod.enabled)
+			// Second iteration: Delete files associated with disabled mods
+			foreach (Mod mod in this.GameMods.Where(mod => !mod.enabled))
+			{
+				string modPluginsFolder = Path.Combine(mod.mod_path, "plugins");
+
+				// Check if the mod has a "plugins" folder
+				if (Directory.Exists(modPluginsFolder))
+				{
+					foreach (string file in Directory.GetFiles(modPluginsFolder, "*", SearchOption.AllDirectories))
 					{
-						foreach (string file in Directory.GetFiles(modPluginsFolder, "*", SearchOption.AllDirectories))
-						{
-							string relativeFilePath = Path.GetRelativePath(modPluginsFolder, file);
-							string fullPath = Path.Combine(this.GamePath, relativeFilePath);
+						string relativeFilePath = Path.GetRelativePath(modPluginsFolder, file);
+						string fullPath = Path.Combine(this.GamePath, relativeFilePath);
 
-							// Check if the file exists in the game path and delete it
-							if (existingFiles.Contains(relativeFilePath))
-							{
-								this.textProgress.Report($"Deleting file {relativeFilePath} from {mod.Name}...");
-								File.Delete(fullPath);
-							}
+						// Check if the file exists in the game path and delete it
+						if (existingFiles.Contains(relativeFilePath))
+						{
+							this.textProgress.Report($"Deleting file {relativeFilePath} from {mod.Name}...");
+							File.Delete(fullPath);
 						}
 					}
 				}

@@ -146,16 +146,14 @@ namespace Concursus
 						// Handle ".cbb" file separately (you can customize this part)
 						foundCBBFile = true;
 						// Perform actions for ".cbb" file, such as downloading or extracting
-						// ...
 
-						// You may choose to break here if you want to ignore other entries
+						// Continue
 						continue;
 					}
-					// Existing code...
 
 					if (foundCBBFile)
 					{
-						// You can add specific actions or messages for the ".cbb" file case
+						// Add specific actions in here for cbb shit, can copy pasta for other files :adachi_true:
 						txtProgress.Text += $"Found a .cbb file! Handling it separately...\n";
 						parent = mod.GetValidFolderName();
 						output_dir = System.IO.Path.Combine(output_dir, mod.GetValidFolderName());
@@ -202,7 +200,7 @@ namespace Concursus
 									}
 								}
 
-								// Optionally, you can add a message to indicate the file move
+								// Crewboom message
 								txtProgress.Text += $"Moved {entryFileName} to CrewBoom folder.\n";
 
 								string dataFolder = System.IO.Path.Combine(output_dir, mod.GameFolderDataName);
