@@ -133,6 +133,7 @@ namespace Concursus
 			string parent = "";
 			bool found_data_dir = false;
 			bool foundCBBFile = false;
+			bool foundCBBCypher = false;
 			using (MemoryStream stream = new MemoryStream(data))
 			using (ArchiveFile archiveFile = new ArchiveFile(stream))
 			{
@@ -143,9 +144,19 @@ namespace Concursus
 
 					if (entry.FileName.EndsWith(".cbb", StringComparison.OrdinalIgnoreCase))
 					{
-						// Handle ".cbb" file separately (you can customize this part)
-						foundCBBFile = true;
-						// Perform actions for ".cbb" file, such as downloading or extracting
+						// Prompt the user to choose between "no" and "no_cypher"
+						MessageBoxResult result = MessageBox.Show("Do you want the mod to go in 'no_cypher'?", "CBB File Detected", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+						if (result == MessageBoxResult.Yes)
+						{
+							// User chose "Yes," set foundCBBCypher to true
+							foundCBBCypher = true;
+						}
+						else
+						{
+							// User chose "No," set foundCBBFile to true
+							foundCBBFile = true;
+						}
 
 						// Continue
 						continue;
@@ -202,6 +213,65 @@ namespace Concursus
 
 								// Crewboom message
 								txtProgress.Text += $"Moved {entryFileName} to CrewBoom folder.\n";
+
+								string dataFolder = System.IO.Path.Combine(output_dir, mod.GameFolderDataName);
+								if (!Directory.Exists(dataFolder)) Directory.CreateDirectory(dataFolder);
+							}
+						}
+					}
+					if (foundCBBCypher)
+					{
+						txtProgress.Text += $"Found a .cbb file! Handling it separately...\n";
+						parent = mod.GetValidFolderName();
+						output_dir = System.IO.Path.Combine(output_dir, parent);
+						found_data_dir = true;
+
+						// Create the required directory structure inside the mod folder
+						string pluginsFolder = System.IO.Path.Combine(output_dir, "plugins");
+						string bepInExFolder = System.IO.Path.Combine(pluginsFolder, "BepInEx");
+						string configFolder = System.IO.Path.Combine(bepInExFolder, "config");
+						string crewBoomFolder = System.IO.Path.Combine(configFolder, "CrewBoom");
+						string noCypherFolder = System.IO.Path.Combine(crewBoomFolder, "no_cypher");
+
+						// Check if the directories exist, and create them if not
+						if (!Directory.Exists(output_dir)) Directory.CreateDirectory(output_dir);
+						if (!Directory.Exists(pluginsFolder)) Directory.CreateDirectory(pluginsFolder);
+						if (!Directory.Exists(bepInExFolder)) Directory.CreateDirectory(bepInExFolder);
+						if (!Directory.Exists(configFolder)) Directory.CreateDirectory(configFolder);
+						if (!Directory.Exists(crewBoomFolder)) Directory.CreateDirectory(crewBoomFolder);
+						if (!Directory.Exists(noCypherFolder)) Directory.CreateDirectory(noCypherFolder);
+
+						// Move .cbb and .json files to the no_cypher folder
+						foreach (var fileEntry in archiveFile.Entries)
+						{
+							string entryFileName = fileEntry.FileName;
+
+							if (entryFileName.EndsWith(".cbb", StringComparison.OrdinalIgnoreCase) ||
+								entryFileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+							{
+								// Construct the destination path inside the CrewBoom folder no_cupher
+								string destinationPath = System.IO.Path.Combine(noCypherFolder, System.IO.Path.GetFileName(entryFileName));
+
+								if (entryFileName.EndsWith(".cbb", StringComparison.OrdinalIgnoreCase))
+								{
+									// For .cbb files, read the content into a MemoryStream and then write to the destination
+									using (MemoryStream memoryStream = new MemoryStream())
+									{
+										fileEntry.Extract(memoryStream);
+										File.WriteAllBytes(destinationPath, memoryStream.ToArray());
+									}
+								}
+								else
+								{
+									// For other files, extract and move as before
+									using (FileStream fs = File.Create(destinationPath))
+									{
+										fileEntry.Extract(fs);
+									}
+								}
+
+								// Crewboom message
+								txtProgress.Text += $"Moved {entryFileName} to CrewBoom's no_cypher folder.\n";
 
 								string dataFolder = System.IO.Path.Combine(output_dir, mod.GameFolderDataName);
 								if (!Directory.Exists(dataFolder)) Directory.CreateDirectory(dataFolder);
