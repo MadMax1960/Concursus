@@ -61,12 +61,10 @@ namespace Concursus
 
             SetupGames(ref games);
 
-			// Show the WelcomePage before the Settings window
-			WelcomePage welcomePage = new WelcomePage();
-			welcomePage.ShowDialog();
-
 			if (!OnePathSet())
 			{
+				WelcomePage welcomePage = new WelcomePage();
+				welcomePage.ShowDialog();
 				ShowSettings(false);
 				SetupGames(ref games);
 			}
