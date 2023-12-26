@@ -134,9 +134,88 @@ namespace Concursus
 			bool found_data_dir = false;
 			bool foundCBBFile = false;
 			bool foundCBBCypher = false;
+			bool foundAudioFiles = false;
 			using (MemoryStream stream = new MemoryStream(data))
 			using (ArchiveFile archiveFile = new ArchiveFile(stream))
 			{
+
+				foreach (var entry in archiveFile.Entries)
+				{
+					// ...
+
+					string fileExtension = System.IO.Path.GetExtension(entry.FileName).ToLower();
+
+					if (fileExtension == ".mp3" || fileExtension == ".wav" || fileExtension == ".flac" || fileExtension == ".ogg" || fileExtension == ".xm")
+					{
+						foundAudioFiles = true;
+
+						// Prompt the user to choose between different options
+						MessageBoxResult result = MessageBox.Show($"Is this a BombRushRadio mod?", $"{fileExtension.ToUpper()} File Detected", MessageBoxButton.YesNo, MessageBoxImage.Question);
+
+						if (result == MessageBoxResult.Yes)
+						{
+
+						}
+
+						// Continue processing other entries
+						continue;
+					}
+
+				}
+
+				if (foundAudioFiles)
+				{
+					// Add specific actions for audio files
+					txtProgress.Text += $"Found an audio file! Handling it separately...\n";
+					parent = mod.GetValidFolderName();
+					output_dir = System.IO.Path.Combine(output_dir, mod.GetValidFolderName());
+					found_data_dir = true;
+
+					// Create the required directory structure inside the mod folder
+					string pluginsFolder = System.IO.Path.Combine(output_dir, "plugins");
+					string audiodata = System.IO.Path.Combine(pluginsFolder, "Bomb Rush Cyberfunk_Data");
+					string streamlikenetflix = System.IO.Path.Combine(audiodata, "StreamingAssets");
+					string modslikedniwetamp = System.IO.Path.Combine(streamlikenetflix, "Mods");
+					string BombRushRadio = System.IO.Path.Combine(modslikedniwetamp, "BombRushRadio");
+					string Songs1 = System.IO.Path.Combine(BombRushRadio, "Songs");
+
+					// Check if the directories exist, and create them if not
+					if (!Directory.Exists(pluginsFolder)) Directory.CreateDirectory(pluginsFolder);
+					if (!Directory.Exists(audiodata)) Directory.CreateDirectory(audiodata);
+					if (!Directory.Exists(streamlikenetflix)) Directory.CreateDirectory(streamlikenetflix);
+					if (!Directory.Exists(modslikedniwetamp)) Directory.CreateDirectory(modslikedniwetamp);
+					if (!Directory.Exists(BombRushRadio)) Directory.CreateDirectory(BombRushRadio);
+					if (!Directory.Exists(Songs1)) Directory.CreateDirectory(Songs1);
+
+					// Move audio files to the Songs folder
+					foreach (var fileEntry in archiveFile.Entries)
+					{
+						string entryFileName = fileEntry.FileName;
+
+						if (entryFileName.EndsWith(".mp3", StringComparison.OrdinalIgnoreCase) ||
+							entryFileName.EndsWith(".flac", StringComparison.OrdinalIgnoreCase) ||
+							entryFileName.EndsWith(".wav", StringComparison.OrdinalIgnoreCase) ||
+							entryFileName.EndsWith(".ogg", StringComparison.OrdinalIgnoreCase) ||
+							entryFileName.EndsWith(".xm", StringComparison.OrdinalIgnoreCase))
+						{
+							// Construct the destination path inside the Songs folder
+							string destinationPath = System.IO.Path.Combine(Songs1, System.IO.Path.GetFileName(entryFileName));
+
+							// Extract and move the file
+							using (FileStream fs = File.Create(destinationPath))
+							{
+								fileEntry.Extract(fs);
+							}
+
+							// Display a message
+							txtProgress.Text += $"Moved {entryFileName} to BombRushRadio's Songs folder.\n";
+
+							string dataFolder = System.IO.Path.Combine(output_dir, mod.GameFolderDataName);
+							if (!Directory.Exists(dataFolder)) Directory.CreateDirectory(dataFolder);
+						}
+					}
+				}
+
 				foreach (var entry in archiveFile.Entries)
 				{
 					List<string> split = entry.FileName.Split(new char[] { '\\', '/' }).ToList();
