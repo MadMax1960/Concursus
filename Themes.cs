@@ -159,8 +159,8 @@ public static ThemeOption GetOptionFromString(string theme)
             for(int i = 0; i < VisualTreeHelper.GetChildrenCount(vis); i++)
             {
                 Visual child = (Visual)VisualTreeHelper.GetChild(vis, i);
-                UpdateColors(child, selected_theme, converter);
-            }
+                UpdateColors(child, selected_theme, converter); //so I can copy 18955
+			}
         }
     }
 }

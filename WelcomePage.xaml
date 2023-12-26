@@ -1,0 +1,17 @@
+<Window x:Class="Concursus.WelcomePage"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Welcome" Height="250" Width="400">
+	<Grid>
+		<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+			<TextBlock Text="If you've read how to use this program, hit continue!" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+			<TextBlock Text="If not, click the link below!" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+			<TextBlock HorizontalAlignment="Center">
+				<Hyperlink x:Name="GitHubLink" RequestNavigate="Hyperlink_RequestNavigate">
+					<TextBlock Text="Click here to open the tutorial!" />
+				</Hyperlink>
+			</TextBlock>
+			<Button Content="Continue" HorizontalAlignment="Center" VerticalAlignment="Top" Click="ContinueButton_Click" Margin="0,10,0,0"/>
+		</StackPanel>
+	</Grid>
+</Window>

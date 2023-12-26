@@ -61,12 +61,16 @@ namespace Concursus
 
             SetupGames(ref games);
 
-            if (!OnePathSet())
-            {
-                ShowSettings(false);
-                SetupGames(ref games);
-            } // If no game path is set
-            if (!OnePathSet()) // If no game path is set and we already asked the user for one but they refused, then just close
+			// Show the WelcomePage before the Settings window
+			WelcomePage welcomePage = new WelcomePage();
+			welcomePage.ShowDialog();
+
+			if (!OnePathSet())
+			{
+				ShowSettings(false);
+				SetupGames(ref games);
+			}
+			if (!OnePathSet()) // If no game path is set and we already asked the user for one but they refused, why the fuck did you open the program?
                 Environment.Exit(0);
 
             SetupGames(ref games);
