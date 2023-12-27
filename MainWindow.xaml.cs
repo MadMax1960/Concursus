@@ -59,7 +59,7 @@ namespace Concursus
             //    enabled = false
             //});
 
-            SetupGames(ref games);
+            SetupGames(ref games);         
 
 			if (!OnePathSet())
 			{
@@ -252,7 +252,7 @@ namespace Concursus
             System.Diagnostics.Process.Start(exe_path);
 
             // Close app
-            Environment.Exit(0);
+            //Environment.Exit(0);
         }
 
         private void btnCreate_Click(object sender, RoutedEventArgs e)
