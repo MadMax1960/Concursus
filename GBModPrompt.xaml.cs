@@ -47,41 +47,59 @@ namespace Concursus
 			this.Close();
 		}
 
+		private void Log(string message)
+		{
+			try
+			{
+				File.AppendAllText("modmanager.log", $"{DateTime.Now}: {message}\n");
+			}
+			catch (Exception ex)
+			{
+				// Optional: Handle logging errors, maybe write to a different file or console
+			}
+		}
+
 		public GBModPrompt(string game_id = null, string mod_id = null)
 		{
+			Log("Constructor started");
 			this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+			Log("WindowStartupLocation set");
 
 			if (game_id == null && mod_id == null)
 			{
+				Log("game_id and mod_id are null, parsing command line arguments");
 				string[] args = Environment.GetCommandLineArgs();
+				Log($"Command line arguments count: {args.Length}");
 				if (args.Length != 2)
 					return;
 
 				string arg = args[1];
+				Log($"Argument extracted: {arg}");
 				if (arg.StartsWith(Utils.MM_PROTOCOL_LINK))
 					arg = arg.Substring((Utils.MM_PROTOCOL_LINK).Length);
 
+				Log($"Processed argument: {arg}");
 				string[] res = arg.Trim().Replace("\\", "/").Trim('/').Split('_');
+				Log($"Argument split into: {String.Join(", ", res)}");
 				if (res.Length != 2)
 					return;
 				game_id = res[0];
 				mod_id = res[1];
+				Log($"game_id: {game_id}, mod_id: {mod_id}");
 			}
 
 			mod = GamebananaMod.GetModInfoFromID(game_id, mod_id);
+			Log($"Mod fetched: {mod?.name ?? "null"}");
 
 			InitializeComponent();
+			Log("InitializeComponent called");
 			Themes.UpdateForm(Themes.CURRENT_THEME, this);
+			Log("Themes updated");
 
 			if (mod == null)
 			{
+				Log($"Failed getting mod with id {mod_id}");
 				MessageBox.Show($"Failed getting mod with id {mod_id}!", "Failed getting mod", MessageBoxButton.OK, MessageBoxImage.Error);
-				Environment.Exit(-1);
-			}
-
-			if (mod.mod_dir_path == "mods")
-			{
-				MessageBox.Show($"{mod.GameName} path has not been set yet! Please set it in the normal manager first before trying to install mods for it.", "Path not set", MessageBoxButton.OK, MessageBoxImage.Error);
 				Environment.Exit(-1);
 			}
 

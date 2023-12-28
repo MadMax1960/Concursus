@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Concursus"
         mc:Ignorable="d"
         Title="Concursus" 
-        SizeToContent="WidthAndHeight"
+        Width="800" Height="600" 
         WindowStartupLocation="CenterScreen"
         Loaded="Naoto_Window">
     <Grid>

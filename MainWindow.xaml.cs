@@ -22,44 +22,9 @@ namespace Concursus
         public MainWindow()
         {
             Utils.CheckForUpdate();
-            this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+			this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
-            //Game.CreateNewCombinedBundle(
-            //    @"D:\Games\Etrian Odyssey Origins Collection\Etrian Odyssey HD\Etrian Odyssey_Data\StreamingAssets\aa\StandaloneWindows64\charabigimgs_assets_all_a59a4657768e489ed89b02121d6faa42.bundle",
-            //    new List<string>()
-            //    {
-            //        @"D:\Games\Etrian Odyssey Origins Collection\Etrian Odyssey HD\mods\Naoto over Joker\Etrian Odyssey_Data\StreamingAssets\aa\StandaloneWindows64\charabigimgs_assets_all_a59a4657768e489ed89b02121d6faa42.bundle",
-            //        @"D:\Games\Etrian Odyssey Origins Collection\Etrian Odyssey HD\mods\Masculine Ringo\Etrian Odyssey_Data\StreamingAssets\aa\StandaloneWindows64\charabigimgs_assets_all_a59a4657768e489ed89b02121d6faa42.bundle"
-            //    },
-            //    "TEST.bundle"
-            //);
-
-            //mods.Add(new Mod
-            //{
-            //    Author = "Coolsonickirby",
-            //    Name = "Cool Mod",
-            //    Version = "1.0.0",
-            //    Description = "My very cool mod",
-            //    enabled = false
-            //});
-            //mods.Add(new Mod
-            //{
-            //    Author = "dasdcz",
-            //    Name = "Cool Mod",
-            //    Version = "1.0.0",
-            //    Description = "My very cool mod",
-            //    enabled = false
-            //});
-            //mods.Add(new Mod
-            //{
-            //    Author = "tes",
-            //    Name = "Cool Mod",
-            //    Version = "1.0.0",
-            //    Description = "My very cool mod",
-            //    enabled = false
-            //});
-
-            SetupGames(ref games);         
+			SetupGames(ref games);         
 
 			if (!OnePathSet())
 			{
@@ -68,7 +33,7 @@ namespace Concursus
 				ShowSettings(false);
 				SetupGames(ref games);
 			}
-			if (!OnePathSet()) // If no game path is set and we already asked the user for one but they refused, why the fuck did you open the program?
+			if (!OnePathSet()) // If no game path is set and we already asked the user for one but they refused, balls
                 Environment.Exit(0);
 
             SetupGames(ref games);
@@ -345,4 +310,3 @@ namespace Concursus
 		}
 	}
 }
-
