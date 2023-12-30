@@ -11,6 +11,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AssetsTools.NET" Version="3.0.0" />
+    <PackageReference Include="Avalonia" Version="11.0.6" />
     <PackageReference Include="Crc32.NET" Version="1.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="RestSharp" Version="110.2.0" />
