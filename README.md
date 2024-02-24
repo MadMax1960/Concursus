@@ -10,7 +10,7 @@ A Unity Mod Manager focused on the merging of assets. The usage is robust though
 
 First of all, you need .net 6.0 to run Concursus. Specifically the runtime (what's highlighted in the image.)
 
-![Balls](https://media.discordapp.net/attachments/831687902824103977/1187997971770507394/Screenshot_19.png?ex=6598ec54&is=65867754&hm=b50bbc05ce347efacc8b07be3d79b4121cb5c12f6ff3a48fd42403d8d1fa8cea&=&format=webp&quality=lossless)
+![Balls]([https://media.discordapp.net/attachments/831687902824103977/1187997971770507394/Screenshot_19.png?ex=6598ec54&is=65867754&hm=b50bbc05ce347efacc8b07be3d79b4121cb5c12f6ff3a48fd42403d8d1fa8cea&=&format=webp&quality=lossless](https://web.archive.org/web/20240209221511im_/https://camo.githubusercontent.com/5e2fe79947ebcf08231696b967792e0672234ac160d78c47b1f24300c6c39d1c/68747470733a2f2f6d656469612e646973636f72646170702e6e65742f6174746163686d656e74732f3833313638373930323832343130333937372f313138373939373937313737303530373339342f53637265656e73686f745f31392e706e673f65783d36353938656335342669733d363538363737353426686d3d62353062626330356365333437656661636338623037626533643739623431323163623563313266366666336134386664343234303364386431666138636561263d26666f726d61743d77656270267175616c6974793d6c6f73736c657373))
 
 Now, to get the program setup, the process is the same for every game. For this little walkthrough though I'll be using [Persona 5 Tactica](https://store.steampowered.com/app/2254740/Persona_5_Tactica/). 
 
