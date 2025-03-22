@@ -276,19 +276,25 @@ namespace Concursus
             selected_game.EditModConfig(editedMod, newConfig);
         }
 
-        private void btnOpenRssFeed_Click(object sender, RoutedEventArgs e)
-        {
-            string rssFeedLink = GetRssFeedLinkForSelectedGame();
+		private void btnOpenRssFeed_Click(object sender, RoutedEventArgs e)
+		{
+			string rssFeedLink = GetRssFeedLinkForSelectedGame();
 
-            if (string.IsNullOrEmpty(rssFeedLink))
-            {
-                MessageBox.Show("Selected game does not have an associated RSS feed link.");
-                return;
-            }
+			if (string.IsNullOrEmpty(rssFeedLink))
+			{
+				MessageBox.Show("Selected game does not have an associated RSS feed link.");
+				return;
+			}
 
-            RSSWindow rssWindow = new RSSWindow(rssFeedLink);
-            rssWindow.Show();
-        }
+			RSSWindow rssWindow = new RSSWindow(rssFeedLink);
+			rssWindow.Closed += RssWindow_Closed; // Subscribe to the Closed event
+			rssWindow.Show();
+		}
+
+		private void RssWindow_Closed(object sender, EventArgs e)
+		{
+			RefreshData();
+		}
 
 		private string GetRssFeedLinkForSelectedGame()
 		{

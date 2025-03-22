@@ -1,15 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Net;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Navigation;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Xml.Linq;
-using System.Net;
 using System.IO;
-using System.Diagnostics;
 using Concursus;
 
 namespace YourNamespace
@@ -29,16 +28,50 @@ namespace YourNamespace
 			// Apply the theme
 			Themes.UpdateForm(Themes.CURRENT_THEME, this);
 
-			LoadRSSFeed();
+			// Begin asynchronous loading of RSS feed
+			LoadRSSFeedAsync();
 		}
 
-		private void LoadRSSFeed()
+		private async void LoadRSSFeedAsync()
 		{
 			try
 			{
-				WebClient webClient = new WebClient();
-				webClient.DownloadStringCompleted += new DownloadStringCompletedEventHandler(webClient_DownloadStringCompleted);
-				webClient.DownloadStringAsync(new Uri(rssFeedLink));
+				using (WebClient webClient = new WebClient())
+				{
+					// Asynchronously download the RSS feed content
+					string rss = await webClient.DownloadStringTaskAsync(new Uri(rssFeedLink));
+					XDocument xdoc = XDocument.Parse(rss);
+					var items = new List<RssItem>();
+
+					// Parse the RSS items
+					foreach (XElement item in xdoc.Descendants("item"))
+					{
+						var rssItem = new RssItem
+						{
+							Title = item.Element("title").Value,
+							Link = item.Element("link").Value,
+							ModId = GetModIdFromLink(item.Element("link").Value)
+							// Note: Image will be loaded asynchronously below
+						};
+
+						items.Add(rssItem);
+					}
+
+					// Bind the list to the ListView immediately for fast display
+					feedListView.ItemsSource = items;
+
+					// Now load images asynchronously so the UI isn’t blocked
+					foreach (XElement item in xdoc.Descendants("item"))
+					{
+						string imageUrl = item.Element("image").Value;
+						// Find the corresponding RssItem (assuming Link is unique)
+						var correspondingItem = items.FirstOrDefault(i => i.Link == item.Element("link").Value);
+						if (correspondingItem != null)
+						{
+							LoadImageAsync(correspondingItem, imageUrl);
+						}
+					}
+				}
 			}
 			catch (Exception ex)
 			{
@@ -46,90 +79,71 @@ namespace YourNamespace
 			}
 		}
 
-		private void webClient_DownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
+		private async void LoadImageAsync(RssItem rssItem, string imageUrl)
 		{
 			try
 			{
-				if (e.Error == null && !e.Cancelled)
+				using (WebClient client = new WebClient())
 				{
-					XDocument xdoc = XDocument.Parse(e.Result);
-					List<RssItem> items = new List<RssItem>();
-
-					foreach (XElement item in xdoc.Descendants("item"))
-					{
-						RssItem rssItem = new RssItem
-						{
-							Title = item.Element("title").Value,
-							Link = item.Element("link").Value,
-							Image = GetImageFromUrl(item.Element("image").Value),
-							ModId = GetModIdFromLink(item.Element("link").Value) 
-						};
-
-						items.Add(rssItem);
-					}
-
-					feedListView.ItemsSource = items;
+					byte[] bytes = await client.DownloadDataTaskAsync(imageUrl);
+					BitmapImage bitmapImage = new BitmapImage();
+					bitmapImage.BeginInit();
+					bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+					bitmapImage.StreamSource = new MemoryStream(bytes);
+					bitmapImage.EndInit();
+					bitmapImage.Freeze(); // Freeze to make it cross-thread accessible
+					rssItem.Image = bitmapImage;
 				}
-				else
-				{
-					MessageBox.Show("Error loading RSS feed: " + e.Error?.Message);
-				}
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show("Error parsing RSS feed: " + ex.Message);
-			}
-		}
-
-		private ImageSource GetImageFromUrl(string imageUrl)
-		{
-			try
-			{
-				WebClient webClient = new WebClient();
-				byte[] bytes = webClient.DownloadData(imageUrl);
-				BitmapImage bitmapImage = new BitmapImage();
-				bitmapImage.BeginInit();
-				bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-				bitmapImage.StreamSource = new MemoryStream(bytes);
-				bitmapImage.EndInit();
-				return bitmapImage;
 			}
 			catch (Exception)
 			{
-				
-				return null;
+				rssItem.Image = null; // Optionally set a default or error image
 			}
 		}
 
 		private int GetModIdFromLink(string link)
 		{
-			// Fuck you
 			int startIndex = link.LastIndexOf("/") + 1;
-			int endIndex = link.Length;
-			string modIdStr = link.Substring(startIndex, endIndex - startIndex);
+			string modIdStr = link.Substring(startIndex);
 			return int.Parse(modIdStr);
 		}
 
 		private void DownloadButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (sender is Button button)
+			if (sender is Button button && button.DataContext is RssItem rssItem)
 			{
-				if (button.DataContext is RssItem rssItem)
-				{
-					// Apply the theme to the GBModPrompt window
-					GBModPrompt modPrompt = new GBModPrompt(game_id, rssItem.ModId.ToString());
-					Themes.UpdateForm(Themes.CURRENT_THEME, modPrompt);
-					modPrompt.ShowDialog();
-				}
+				// Open the GBModPrompt window
+				GBModPrompt modPrompt = new GBModPrompt(game_id, rssItem.ModId.ToString());
+				Themes.UpdateForm(Themes.CURRENT_THEME, modPrompt);
+				modPrompt.ShowDialog();
 			}
 		}
 
-		public class RssItem
+		public class RssItem : INotifyPropertyChanged
 		{
 			public string Title { get; set; }
 			public string Link { get; set; }
-			public ImageSource Image { get; set; }
-			public int ModId { get; set; } 
+
+			private ImageSource image;
+			public ImageSource Image
+			{
+				get { return image; }
+				set
+				{
+					if (image != value)
+					{
+						image = value;
+						OnPropertyChanged("Image");
+					}
+				}
+			}
+			public int ModId { get; set; }
+
+			public event PropertyChangedEventHandler PropertyChanged;
+			protected void OnPropertyChanged(string propertyName)
+			{
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+			}
 		}
 	}
 }
