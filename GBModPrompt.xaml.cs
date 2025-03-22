@@ -3,19 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Concursus.Classes;
 using SevenZipExtractor;
+
+
 
 namespace Concursus
 {
@@ -377,6 +373,9 @@ namespace Concursus
 				}
 			}
 
+			// Add this call to fix folder structure
+			FixExtractionFolderStructure(output_dir);
+
 			// Generate configuration if it doesn't exist.
 			string config_dir = System.IO.Path.Combine(mod.mod_dir_path, parentFolder);
 			if (!File.Exists(System.IO.Path.Combine(config_dir, ModConfig.CONFIG_FILE)))
@@ -430,6 +429,40 @@ namespace Concursus
 							return ms.ToArray();
 						}
 					}
+				}
+			}
+		}
+		private void FixExtractionFolderStructure(string modFolder)
+		{
+			// Get all subdirectories and files in the mod folder.
+			var directories = Directory.GetDirectories(modFolder);
+			var files = Directory.GetFiles(modFolder);
+
+			// If there's exactly one directory and no files, then check its contents.
+			if (directories.Length == 1 && files.Length == 0)
+			{
+				string nestedFolder = directories[0];
+
+				// Check if the nested folder contains a _Data folder or any .json file.
+				bool hasDataFolder = Directory.Exists(System.IO.Path.Combine(nestedFolder, "_Data"));
+				bool hasJsonFile = Directory.GetFiles(nestedFolder, "*.json", SearchOption.TopDirectoryOnly).Any();
+
+				if (hasDataFolder || hasJsonFile)
+				{
+					// Move all files from the nested folder to the mod folder.
+					foreach (var file in Directory.GetFiles(nestedFolder))
+					{
+						string destFile = System.IO.Path.Combine(modFolder, System.IO.Path.GetFileName(file));
+						File.Move(file, destFile);
+					}
+					// Move all directories from the nested folder to the mod folder.
+					foreach (var directory in Directory.GetDirectories(nestedFolder))
+					{
+						string destDir = System.IO.Path.Combine(modFolder, System.IO.Path.GetFileName(directory));
+						Directory.Move(directory, destDir);
+					}
+					// Remove the now-empty nested folder.
+					Directory.Delete(nestedFolder);
 				}
 			}
 		}
