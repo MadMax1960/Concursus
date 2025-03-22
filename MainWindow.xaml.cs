@@ -7,7 +7,6 @@ using System.Windows;
 using System.Windows.Controls;
 using YourNamespace;
 using Newtonsoft.Json;
-using System.Drawing;
 
 namespace Concursus
 {

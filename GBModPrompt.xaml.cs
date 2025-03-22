@@ -24,7 +24,6 @@ namespace Concursus
 	/// </summary>
 	public partial class GBModPrompt : Window
 	{
-
 		static string DESCRIPTION_HTML = @"
             <html>
                 <head>
@@ -110,7 +109,6 @@ namespace Concursus
 			this.txtSubmitter.Text = mod.submitter;
 			this.txtVersion.Text = mod.version;
 
-
 			BitmapImage bitmap = new BitmapImage();
 			bitmap.BeginInit();
 			bitmap.UriSource = new Uri(mod.images[0], UriKind.Absolute);
@@ -180,6 +178,9 @@ namespace Concursus
 			string output_dir = baseOutputDir;
 			// This variable will store the name of the new folder (if created).
 			string parentFolder = "";
+
+			// List to store the names of files manually moved.
+			List<string> movedFiles = new List<string>();
 
 			txtProgress.Text += "Reading archive...\n";
 
@@ -255,12 +256,14 @@ namespace Concursus
 					string crewBoomFolder = System.IO.Path.Combine(configFolder, "CrewBoom");
 					// Target folder depends on the user response.
 					string targetFolder = useNoCypher ? System.IO.Path.Combine(crewBoomFolder, "no_cypher") : crewBoomFolder;
+					string bombRushDataFolder = System.IO.Path.Combine(output_dir, "Bomb Rush Cyberfunk_Data");
 
 					Directory.CreateDirectory(pluginsFolder);
 					Directory.CreateDirectory(bepInExFolder);
 					Directory.CreateDirectory(configFolder);
 					Directory.CreateDirectory(crewBoomFolder);
 					Directory.CreateDirectory(targetFolder);
+					Directory.CreateDirectory(bombRushDataFolder);
 
 					// Move .cbb and .json files into the target folder.
 					foreach (var entry in archiveFile.Entries)
@@ -268,7 +271,9 @@ namespace Concursus
 						if (entry.FileName.EndsWith(".cbb", StringComparison.OrdinalIgnoreCase) ||
 							entry.FileName.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
 						{
-							string destPath = System.IO.Path.Combine(targetFolder, System.IO.Path.GetFileName(entry.FileName));
+							string fileName = System.IO.Path.GetFileName(entry.FileName);
+							movedFiles.Add(fileName);
+							string destPath = System.IO.Path.Combine(targetFolder, fileName);
 							using (FileStream fs = File.Create(destPath))
 							{
 								entry.Extract(fs);
@@ -356,6 +361,20 @@ namespace Concursus
 									MessageBoxButton.OK, MessageBoxImage.Error);
 					return;
 				}
+
+				// If it's a CBB mod, delete duplicate .cbb and .json files from the root mod folder.
+				if (movedFiles.Count > 0)
+				{
+					foreach (string fileName in movedFiles)
+					{
+						string duplicatePath = System.IO.Path.Combine(output_dir, fileName);
+						if (File.Exists(duplicatePath))
+						{
+							File.Delete(duplicatePath);
+							txtProgress.Text += $"Deleted duplicate {fileName} from root mod folder.\n";
+						}
+					}
+				}
 			}
 
 			// Generate configuration if it doesn't exist.
@@ -369,8 +388,6 @@ namespace Concursus
 			await Task.Delay(TimeSpan.FromSeconds(5));
 			this.Close();
 		}
-
-
 
 		private void toggleImage_Click(object sender, RoutedEventArgs e)
 		{
