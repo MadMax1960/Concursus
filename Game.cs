@@ -279,12 +279,15 @@ namespace Concursus
 			if (textProgress == null)
 				textProgress = new Progress<string>();
 
-			// Temporary solution: Directly inform the user that merging is not available
-			MessageBox.Show("Merging is currently not available. Please try again later.", "Merging Unavailable", MessageBoxButton.OK, MessageBoxImage.Information);
+			// Inform the user that merging is not implemented
+			textProgress.Report("Merging for bundles is not implemented. Copying the highest priority mod file instead...");
 
-			textProgress.Report("Merging operation skipped due to current limitations.");
-			// Here, you can add any additional logic if needed, such as copying the original file to the output without modification.
+			// Copy the highest priority mod file (assumed to be the first in the reversed list)
+			File.Copy(modded_paths[0], output, true);
+
+			textProgress.Report($"File copied from {modded_paths[0]} to {output}");
 		}
+
 		//if (textProgress == null)
 		//	textProgress = new Progress<string>();
 
@@ -338,16 +341,16 @@ namespace Concursus
 		//using (var writer = new AssetsFileWriter(stream))
 		//{
 		//og_assetInst.file.Write(writer);
-				//newAssetData = stream.ToArray();
-			//}
+		//newAssetData = stream.ToArray();
+		//}
 
-			// Unload all assets and bundles before saving the new bundle
-			//am.UnloadAll();
+		// Unload all assets and bundles before saving the new bundle
+		//am.UnloadAll();
 
-			//textProgress.Report("Writing merged bundle to output file...");
-			//File.WriteAllBytes(output, newAssetData);
+		//textProgress.Report("Writing merged bundle to output file...");
+		//File.WriteAllBytes(output, newAssetData);
 
-			//textProgress.Report("Merged bundle creation complete.");
+		//textProgress.Report("Merged bundle creation complete.");
 		//}
 
 

@@ -11,13 +11,8 @@ using System.Windows.Shapes;
 using Concursus.Classes;
 using SevenZipExtractor;
 
-
-
 namespace Concursus
 {
-	/// <summary>
-	/// Interaction logic for GBModPrompt.xaml
-	/// </summary>
 	public partial class GBModPrompt : Window
 	{
 		static string DESCRIPTION_HTML = @"
@@ -51,7 +46,7 @@ namespace Concursus
 			}
 			catch (Exception ex)
 			{
-				// Optional: Handle logging errors, maybe write to a different file or console
+				// Optional: Handle logging errors
 			}
 		}
 
@@ -195,6 +190,10 @@ namespace Concursus
 				bool isCbbMod = archiveFile.Entries.Any(e =>
 					e.FileName.EndsWith(".cbb", StringComparison.OrdinalIgnoreCase));
 
+				// NEW: Check if the archive contains a `config.json`.
+				bool hasConfigJson = archiveFile.Entries.Any(e =>
+					e.FileName.EndsWith("config.json", StringComparison.OrdinalIgnoreCase));
+
 				bool structureFound = false;
 
 				if (isAudioMod)
@@ -234,7 +233,10 @@ namespace Concursus
 					}
 					structureFound = true;
 				}
-				else if (isCbbMod)
+				// Only treat it as a cbb mod if it has .cbb files AND does not have config.json
+				// or a normal game-data structure.
+				else if (isCbbMod && !hasConfigJson &&
+						 !archiveFile.Entries.Any(e => e.FileName.Contains(mod.GameFolderDataName)))
 				{
 					// For mods with .cbb files, ask the user once whether to use "no_cypher".
 					MessageBoxResult result = MessageBox.Show("Do you want the mod to go in 'no_cypher'?",
@@ -305,7 +307,8 @@ namespace Concursus
 							{
 								// Use the parent folder already provided by the archive.
 								parentFolder = parts[idx - 1];
-								output_dir = System.IO.Path.Combine(baseOutputDir, parentFolder);
+								// Extract directly into the base directory (prevents duplication).
+								output_dir = baseOutputDir;
 								structureFound = true;
 								break;
 							}
@@ -373,9 +376,6 @@ namespace Concursus
 				}
 			}
 
-			// Add this call to fix folder structure
-			FixExtractionFolderStructure(output_dir);
-
 			// Generate configuration if it doesn't exist.
 			string config_dir = System.IO.Path.Combine(mod.mod_dir_path, parentFolder);
 			if (!File.Exists(System.IO.Path.Combine(config_dir, ModConfig.CONFIG_FILE)))
@@ -404,7 +404,6 @@ namespace Concursus
 		{
 			using (var client = new HttpClient())
 			{
-				// Request the content without buffering it entirely in memory.
 				using (var response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
 				{
 					response.EnsureSuccessStatusCode();
@@ -429,40 +428,6 @@ namespace Concursus
 							return ms.ToArray();
 						}
 					}
-				}
-			}
-		}
-		private void FixExtractionFolderStructure(string modFolder)
-		{
-			// Get all subdirectories and files in the mod folder.
-			var directories = Directory.GetDirectories(modFolder);
-			var files = Directory.GetFiles(modFolder);
-
-			// If there's exactly one directory and no files, then check its contents.
-			if (directories.Length == 1 && files.Length == 0)
-			{
-				string nestedFolder = directories[0];
-
-				// Check if the nested folder contains a _Data folder or any .json file.
-				bool hasDataFolder = Directory.Exists(System.IO.Path.Combine(nestedFolder, "_Data"));
-				bool hasJsonFile = Directory.GetFiles(nestedFolder, "*.json", SearchOption.TopDirectoryOnly).Any();
-
-				if (hasDataFolder || hasJsonFile)
-				{
-					// Move all files from the nested folder to the mod folder.
-					foreach (var file in Directory.GetFiles(nestedFolder))
-					{
-						string destFile = System.IO.Path.Combine(modFolder, System.IO.Path.GetFileName(file));
-						File.Move(file, destFile);
-					}
-					// Move all directories from the nested folder to the mod folder.
-					foreach (var directory in Directory.GetDirectories(nestedFolder))
-					{
-						string destDir = System.IO.Path.Combine(modFolder, System.IO.Path.GetFileName(directory));
-						Directory.Move(directory, destDir);
-					}
-					// Remove the now-empty nested folder.
-					Directory.Delete(nestedFolder);
 				}
 			}
 		}
