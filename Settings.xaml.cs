@@ -45,7 +45,8 @@ namespace Concursus
 	{ "SOUL HACKERS2.exe", 45 },
 	{ "Persona 5 Tactica.exe", 10 },
 	{ "Bomb Rush Cyberfunk.exe", 11 },
-	{ "K12_Data", 12 }
+	{ "K12_Data", 12 },
+    { "Raidou TMOTSA.exe", 14 }
     // Add more entries for other known games as needed
 };
 
@@ -58,7 +59,8 @@ namespace Concursus
 	{ "Etrian Odyssey 3.exe", 18481 },
 	{ "Persona 5 Tactica.exe", 18918 },
 	{ "Bomb Rush Cyberfunk.exe", 18955 },
-	{ "GK12.exe", 21360 }
+	{ "GK12.exe", 21360 },
+    { "Raidou TMOTSA.exe", 22440 }
     // Add more entries for other known games as needed
 };
 
@@ -71,7 +73,8 @@ namespace Concursus
 	{ "Etrian Odyssey 3.exe", "EO3HD" },
 	{ "Persona 5 Tactica.exe", "P5T" },
 	{ "Bomb Rush Cyberfunk.exe", "BRC" },
-	{ "GK12.exe", "AAIC" }
+	{ "GK12.exe", "AAIC" },
+    { "Raidou TMOTSA.exe", "RRMoSA" }
     // Add more entries for other known games as needed
 };
 
