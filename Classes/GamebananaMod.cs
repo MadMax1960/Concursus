@@ -60,19 +60,28 @@ namespace Concursus.Classes
 			mod.submitter = (string)jsonObj[2].AsValue();
 			mod.description = (string)jsonObj[3].AsValue();
 
-			mod.files = new Dictionary<string, Files>();
+            mod.files = new Dictionary<string, Files>();
 
-			foreach (var item in (JsonObject)jsonObj[4].AsObject())
-				mod.files.Add(item.Key, new Files
-				{
-					filename = (string)item.Value["_sFile"].AsValue(),
-					download_link = (string)item.Value["_sDownloadUrl"].AsValue(),
-					description = (string)item.Value["_sDescription"].AsValue(),
-					md5 = (string)item.Value["_sMd5Checksum"].AsValue(),
-					filesize = (int)item.Value["_nFilesize"].AsValue(),
-				});
+            JsonObject? filesObj = jsonObj[4]?.AsObject();
+            if (filesObj != null)
+            {
+                foreach (var item in filesObj)
+                {
+                    if (item.Value == null)
+                        continue;
 
-			mod.images = new List<string>();
+                    mod.files.Add(item.Key, new Files
+                    {
+                        filename = (string?)item.Value["_sFile"]?.AsValue() ?? string.Empty,
+                        download_link = (string?)item.Value["_sDownloadUrl"]?.AsValue() ?? string.Empty,
+                        description = (string?)item.Value["_sDescription"]?.AsValue() ?? string.Empty,
+                        md5 = (string?)item.Value["_sMd5Checksum"]?.AsValue() ?? string.Empty,
+                        filesize = item.Value["_nFilesize"]?.GetValue<int>() ?? 0,
+                    });
+                }
+            }
+
+            mod.images = new List<string>();
 
 			JsonArray? images = JsonSerializer.Deserialize<JsonArray>((string)jsonObj[5].AsValue());
 			if (images != null)
